@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRecipeDto {
   @ApiProperty({
-    example: 'Bread recipe example tilte',
+    example: 'Bread recipe example title',
     description: 'Title of recipe',
     format: 'string',
     minLength: 6,

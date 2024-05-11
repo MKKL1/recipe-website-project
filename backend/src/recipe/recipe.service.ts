@@ -12,8 +12,20 @@ export class RecipeService {
     return this.recipeModel.find().exec();
   }
 
+  async getOneRecipe(id: string): Promise<Recipe> {
+    return this.recipeModel.findById(id).exec();
+  }
+
   async create(createRecipeDto: CreateRecipeDto): Promise<Recipe> {
     const createdCat = new this.recipeModel(createRecipeDto);
     return createdCat.save();
+  }
+
+  async updateRecipe(id: string, createRecipeDto: CreateRecipeDto) {
+    return this.recipeModel.updateOne({ _id: id }, createRecipeDto).exec();
+  }
+
+  async deleteRecipe(id: string) {
+    return this.recipeModel.findByIdAndDelete(id);
   }
 }
