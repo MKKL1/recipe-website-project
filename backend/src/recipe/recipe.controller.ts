@@ -8,12 +8,21 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
 import { Recipe } from './schemas/recipe.schema';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
-import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
+@ApiTags('Recipe')
 @Controller('recipe')
 export class RecipeController {
   constructor(private readonly recipeService: RecipeService) {}
@@ -34,15 +43,22 @@ export class RecipeController {
   }
 
   @Post()
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create recipe' })
+  @ApiBearerAuth()
+  @ApiOkResponse({})
   async createRecipe(@Body() createRecipeDto: CreateRecipeDto) {
     return this.recipeService.create(createRecipeDto);
   }
 
   @Put(':id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Update recipe' })
+  @ApiBearerAuth()
   @ApiOkResponse({})
   async updateRecipe(
     @Param() params,
@@ -52,8 +68,11 @@ export class RecipeController {
   }
 
   @Delete(':id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete recipe' })
+  @ApiBearerAuth()
   @ApiOkResponse({})
   async deleteRecipe(@Param() params) {
     return this.recipeService.deleteRecipe(params.id);
