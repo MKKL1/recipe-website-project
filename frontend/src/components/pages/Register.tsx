@@ -1,6 +1,6 @@
 import {Alert, Button, Card, Form, FormGroup, Spinner} from "react-bootstrap";
 import {Formik} from "formik";
-import {RegistrationRequest} from "../models/RegistrationRequest.ts";
+import {RegistrationRequest} from "../../models/RegistrationRequest.ts";
 import * as Yup from 'yup';
 import {object} from "yup";
 
@@ -20,7 +20,7 @@ export default function Register(){
 
     function submitRegistration(values: RegistrationRequest){
         // send request to backend
-        setTimeout(() => {console.log(values)}, 2000);
+        console.log(values);
 
     }
 

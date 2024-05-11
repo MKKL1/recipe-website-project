@@ -1,5 +1,5 @@
 import {Alert, Button, Card, Form, FormGroup, Spinner} from "react-bootstrap";
-import {LoginRequest} from "../models/LoginRequest.ts";
+import {LoginRequest} from "../../models/LoginRequest.ts";
 import {Formik} from "formik";
 import * as Yup from 'yup';
 import {object} from "yup";
@@ -35,7 +35,7 @@ export default function Login(){
                                 </FormGroup>
                                 <FormGroup controlId="password" className="mb-3">
                                     <Form.Label>Password</Form.Label>
-                                    <Form.Control type="password" name="password" placeholder="Enter your Password"/>
+                                    <Form.Control type="password" name="password" placeholder="Enter your Password" onChange={handleChange}/>
                                     {errors.password && <Alert style={{marginTop: '10px'}} variant="danger">{errors.password}</Alert>}
                                 </FormGroup>
                                 {/* change button after submitting */}
