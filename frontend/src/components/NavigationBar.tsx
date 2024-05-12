@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 
 export default function NavigationBar(){
-    const {isAuth, resetToken} = useAuthContext();
+    const {isAuth, user, resetToken} = useAuthContext();
 
     return (
         <div>
@@ -17,7 +17,7 @@ export default function NavigationBar(){
                             <Nav.Link as={Link} to='/recipes'>Recipes</Nav.Link>
                             { isAuth ?
                                 <>
-                                    <Nav.Link as={Link} to='/profile'>Hello, Ania</Nav.Link>
+                                    <Nav.Link as={Link} to='/profile'>Hello, {user.username}</Nav.Link>
                                     <Nav.Link onClick={resetToken}>Logout</Nav.Link>
                                 </> : 
                                 <>
@@ -25,7 +25,6 @@ export default function NavigationBar(){
                                     <Nav.Link as={Link} to='/register'>Register</Nav.Link>
                                 </>
                             }
-                            {/*  add logout and logic for displaying it  */}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

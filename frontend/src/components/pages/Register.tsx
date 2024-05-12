@@ -26,7 +26,7 @@ export default function Register(){
 
         // TODO Show toast with info, redirect to another page and change nav if success
         // password is sent back to user
-        axios.post(environment.apiUrl + "users", {
+        axios.post(environment.apiUrl + "auth/register", {
             username: values.username,
             email: values.email,
             password: values.password
