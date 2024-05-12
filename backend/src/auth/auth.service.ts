@@ -3,7 +3,7 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserDocument } from '../users/schemas/users.schema';
-import { Types } from 'mongoose';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,18 +13,27 @@ export class AuthService {
   ) {}
 
   async login(username: string, password: string): Promise<any> {
-    // const passwordHash = await bcrypt.hash(password, 10);
-    // console.log('password ' + password + ' hash: ' + passwordHash);
     const user = await this.usersService.findByUsername(username);
-
-    // const isMatch = await bcrypt.compare(user?.password, passwordHash);
-    if (user?.password !== password) {
+    if (!user) {
       throw new UnauthorizedException();
     }
-    const payload = { sub: user._id, username: user.username };
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      throw new UnauthorizedException();
+    }
+    return this.loginByDocument(user);
+  }
+
+  async loginByDocument(userDocument: UserDocument) {
+    const payload = { sub: userDocument._id, username: userDocument.username };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async register(createUserDto: CreateUserDto): Promise<any> {
+    const user = await this.usersService.create(createUserDto);
+    return this.loginByDocument(user);
   }
 
   async validateUser(jwtPayload: any): Promise<any> {

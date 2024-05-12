@@ -6,10 +6,10 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema()
 export class User {
-  @Prop()
+  @Prop({ unique: true })
   username: string;
 
-  @Prop()
+  @Prop({ unique: true })
   email: string;
 
   @Prop()
@@ -21,17 +21,17 @@ export class User {
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-// UserSchema.pre('save', function (next) {
-//   // eslint-disable-next-line @typescript-eslint/no-this-alias
-//   const user = this;
-//
-//   // only hash the password if it has been modified (or is new)
-//   if (!user.isModified('password')) return next();
-//
-//   bcrypt.hash(user.password, 10, function (err, hash) {
-//     if (err) return next(err);
-//     // override the cleartext password with the hashed one
-//     user.password = hash;
-//     next();
-//   });
-// });
+UserSchema.pre('save', function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+
+  // only hash the password if it has been modified (or is new)
+  if (!user.isModified('password')) return next();
+
+  bcrypt.hash(user.password, 10, function (err, hash) {
+    if (err) return next(err);
+    // override the cleartext password with the hashed one
+    user.password = hash;
+    next();
+  });
+});
