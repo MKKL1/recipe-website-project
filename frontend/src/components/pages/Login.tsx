@@ -5,8 +5,12 @@ import * as Yup from 'yup';
 import {object} from "yup";
 import axios from "axios";
 import {environment} from "../../../environment.ts";
+import { useAuthContext} from "../../contexts/AuthContext.tsx";
+
 
 export default function Login(){
+    const {token, updateToken} = useAuthContext();
+
     const loginSchema = object({
         username: Yup.string()
             .required("Username is required"),
@@ -16,20 +20,23 @@ export default function Login(){
 
     function submitLogin(values: LoginRequest){
         console.log(values);
+
         // send request to backend
         // user model isn't returned
         // I don't know if it should return 401
         axios.post(environment.apiUrl + "auth/login", values)
             .then(res => {
-                console.log(res);
+                const accessToken = res.data.access_token;
+                updateToken(accessToken);
             })
             .catch(err => {
                 console.error(err);
-            })
+            });
     }
 
     return (
         <>
+            <p>{token}</p>
             <Card className="form-container">
                 <Card.Body>
                     <Card.Title className="text-center">Sign in</Card.Title>
