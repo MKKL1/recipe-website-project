@@ -6,6 +6,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { isUnique } from '../../validators/unique.interface';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -19,6 +20,7 @@ export class CreateUserDto {
   @IsString()
   @MinLength(5)
   @MaxLength(16)
+  @isUnique({ collection: 'users', column: 'username' })
   readonly username: string;
 
   @ApiProperty({
@@ -31,6 +33,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @IsEmail()
+  @isUnique({ collection: 'users', column: 'email' })
   readonly email: string;
 
   @ApiProperty({
