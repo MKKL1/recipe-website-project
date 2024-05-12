@@ -2,33 +2,32 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import NavigationBar from "./components/NavigationBar.tsx";
+import Home from "./components/pages/Home.tsx";
+import Recipes from "./components/recipe/Recipes.tsx";
+import Register from "./components/pages/Register.tsx";
+import Login from "./components/pages/Login.tsx";
+import {Button} from "react-bootstrap";
+import RecipeForm from "./components/recipe/RecipeForm.tsx";
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+        <BrowserRouter>
+            <NavigationBar/>
+            <h1>Main page</h1>
+            <Routes>
+                <Route path='/' Component={Home}/>
+                <Route path='/login' Component={Login}/>
+                <Route path='/register' Component={Register}/>
+                <Route path='/add' Component={RecipeForm}/>
+                <Route path='/recipes' Component={Recipes}/>
+            </Routes>
+        </BrowserRouter>
+    </div>
   )
 }
 
