@@ -37,14 +37,14 @@ export class CommentsService {
   }
 
   async update(id: string, createCommentDto: CreateCommentDto, user: User) {
-    if (!this.checkPermission(id, user)) {
+    if (!(await this.checkPermission(id, user))) {
       throw new UnauthorizedException();
     }
     return this.commentModel.updateOne({ _id: id }, createCommentDto).exec();
   }
 
   async delete(id: string, user: User) {
-    if (!this.checkPermission(id, user)) {
+    if (!(await this.checkPermission(id, user))) {
       throw new UnauthorizedException();
     }
     return this.commentModel.findByIdAndDelete(id);
