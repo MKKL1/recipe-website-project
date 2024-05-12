@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Recipe } from './schemas/recipe.schema';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
+import { User } from '../users/schemas/users.schema';
 
 @Injectable()
 export class RecipeService {
@@ -16,8 +17,13 @@ export class RecipeService {
     return this.recipeModel.findById(id).exec();
   }
 
-  async create(createRecipeDto: CreateRecipeDto): Promise<Recipe> {
-    const createdCat = new this.recipeModel(createRecipeDto);
+  async create(createRecipeDto: CreateRecipeDto, user: User): Promise<Recipe> {
+    const createdCat = new this.recipeModel({
+      ...createRecipeDto,
+      author_id: user,
+      created_at: Date.now(),
+      updated_at: Date.now(),
+    });
     return createdCat.save();
   }
 

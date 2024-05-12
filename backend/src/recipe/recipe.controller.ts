@@ -21,6 +21,8 @@ import {
 } from '@nestjs/swagger';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { GetUser } from '../users/decorators/getuser.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Recipe')
 @Controller('recipe')
@@ -49,8 +51,11 @@ export class RecipeController {
   @ApiOperation({ summary: 'Create recipe' })
   @ApiBearerAuth()
   @ApiOkResponse({})
-  async createRecipe(@Body() createRecipeDto: CreateRecipeDto) {
-    return this.recipeService.create(createRecipeDto);
+  async createRecipe(
+    @GetUser() user,
+    @Body() createRecipeDto: CreateRecipeDto,
+  ) {
+    return this.recipeService.create(createRecipeDto, user);
   }
 
   @Put(':id')

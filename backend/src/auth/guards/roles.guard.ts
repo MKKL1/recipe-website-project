@@ -1,4 +1,9 @@
-import { ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
 
@@ -20,6 +25,6 @@ export class RolesGuard extends AuthGuard('jwt') {
     if (!(user.roles && hasRole())) {
       throw new ForbiddenException('Forbidden');
     }
-    return user && user.roles && hasRole();
+    return user;
   }
 }
