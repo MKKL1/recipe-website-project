@@ -28,7 +28,15 @@ export class RecipeService {
   }
 
   async updateRecipe(id: string, createRecipeDto: CreateRecipeDto) {
-    return this.recipeModel.updateOne({ _id: id }, createRecipeDto).exec();
+    return this.recipeModel
+      .updateOne(
+        { _id: id },
+        {
+          ...createRecipeDto,
+          updated_at: Date.now(),
+        },
+      )
+      .exec();
   }
 
   async deleteRecipe(id: string) {

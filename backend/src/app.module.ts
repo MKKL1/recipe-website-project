@@ -6,6 +6,7 @@ import { RecipeModule } from './recipe/recipe.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { IsUniqueConstraint } from './validators/unique.validator';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { IsUniqueConstraint } from './validators/unique.validator';
     RecipeModule,
     UsersModule,
     AuthModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService, IsUniqueConstraint],

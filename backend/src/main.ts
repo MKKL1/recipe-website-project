@@ -14,7 +14,6 @@ async function bootstrap() {
     .setTitle('Bread website')
     .setDescription('Bread website API description')
     .setVersion('1.0')
-    .addTag('recipe')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
