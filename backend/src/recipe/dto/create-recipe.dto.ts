@@ -1,4 +1,10 @@
-import { IsNotEmpty, MinLength, MaxLength, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  MinLength,
+  MaxLength,
+  IsString,
+  IsOptional,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRecipeDto {
@@ -23,4 +29,14 @@ export class CreateRecipeDto {
   @IsNotEmpty()
   @IsString()
   readonly content: string;
+
+  @ApiProperty({
+    example:
+      'https://preppykitchen.com/wp-content/uploads/2022/03/Artisan-Bread-Recipe-Card-500x500.jpg',
+    description: 'For now use url to image until I make image storage',
+    format: 'string',
+  })
+  @IsOptional()
+  @IsString()
+  image_id: string;
 }
