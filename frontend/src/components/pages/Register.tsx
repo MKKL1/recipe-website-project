@@ -3,8 +3,11 @@ import {Formik} from "formik";
 import {RegistrationRequest} from "../../models/RegistrationRequest.ts";
 import * as Yup from 'yup';
 import {object} from "yup";
+import axios from "axios";
+import {environment} from "../../../environment.ts";
 
 export default function Register(){
+    // TODO check if password are identical
     const registrationSchema = object({
         username: Yup.string()
             .min(6, 'Username must have at least 6 characters')
@@ -19,9 +22,21 @@ export default function Register(){
     });
 
     function submitRegistration(values: RegistrationRequest){
-        // send request to backend
         console.log(values);
 
+        // TODO Show toast with info, redirect to another page and change nav if success
+        // password is sent back to user
+        axios.post(environment.apiUrl + "users", {
+            username: values.username,
+            email: values.email,
+            password: values.password
+        })
+        .then(res => {
+            console.log(res);
+        })
+        .catch(err => {
+            console.error(err);
+        });
     }
 
     return (
