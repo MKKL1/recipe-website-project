@@ -20,23 +20,13 @@ export class RecipeService {
   async create(createRecipeDto: CreateRecipeDto, user: User): Promise<Recipe> {
     const createdCat = new this.recipeModel({
       ...createRecipeDto,
-      author_id: user,
-      created_at: Date.now(),
-      updated_at: Date.now(),
+      author_id: user._id,
     });
     return createdCat.save();
   }
 
   async updateRecipe(id: string, createRecipeDto: CreateRecipeDto) {
-    return this.recipeModel
-      .updateOne(
-        { _id: id },
-        {
-          ...createRecipeDto,
-          updated_at: Date.now(),
-        },
-      )
-      .exec();
+    return this.recipeModel.updateOne({ _id: id }, createRecipeDto).exec();
   }
 
   async deleteRecipe(id: string) {

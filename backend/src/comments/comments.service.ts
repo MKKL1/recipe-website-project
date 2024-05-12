@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Comment } from './schemas/comment.schema';
@@ -22,12 +26,12 @@ export class CommentsService {
   async create(
     createCommentDto: CreateCommentDto,
     user: User,
+    recipeId: string,
   ): Promise<Comment> {
     const createdCat = new this.commentModel({
       ...createCommentDto,
-      user_id: user,
-      created_at: Date.now(),
-      updated_at: Date.now(),
+      user_id: user._id,
+      recipe_id: recipeId,
     });
     return createdCat.save();
   }
@@ -36,15 +40,7 @@ export class CommentsService {
     if (!this.checkPermission(id, user)) {
       throw new UnauthorizedException();
     }
-    return this.commentModel
-      .updateOne(
-        { _id: id },
-        {
-          ...createCommentDto,
-          updated_at: Date.now(),
-        },
-      )
-      .exec();
+    return this.commentModel.updateOne({ _id: id }, createCommentDto).exec();
   }
 
   async delete(id: string, user: User) {
@@ -58,6 +54,9 @@ export class CommentsService {
     if (user.roles.includes('admin')) return true;
 
     const comment = await this.commentModel.findById(id).exec();
-    return comment.user_id === user;
+    if (!comment) {
+      throw new NotFoundException();
+    }
+    return comment.user_id._id === user._id;
   }
 }

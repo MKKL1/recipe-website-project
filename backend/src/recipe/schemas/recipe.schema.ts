@@ -1,12 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { User } from '../../users/schemas/users.schema';
 
 export type RecipeDocument = HydratedDocument<Recipe>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Recipe {
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  _id: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: User.name })
   author_id: User;
 
   @Prop()
@@ -17,12 +19,6 @@ export class Recipe {
 
   @Prop()
   image_id: string;
-
-  @Prop()
-  created_at: Date;
-
-  @Prop()
-  updated_at: Date;
 }
 
 export const RecipeSchema = SchemaFactory.createForClass(Recipe);

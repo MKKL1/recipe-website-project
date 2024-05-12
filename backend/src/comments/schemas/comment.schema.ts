@@ -1,26 +1,22 @@
-import mongoose, { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '../../users/schemas/users.schema';
 import { Recipe } from '../../recipe/schemas/recipe.schema';
 
 export type CommentDocument = HydratedDocument<Comment>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Comment {
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  _id: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: User.name, required: true })
   user_id: User;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Recipe' })
+  @Prop({ type: Types.ObjectId, ref: Recipe.name, required: true })
   recipe_id: Recipe;
 
-  @Prop()
+  @Prop({ required: true })
   content: string;
-
-  @Prop()
-  created_at: Date;
-
-  @Prop()
-  updated_at: Date;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
