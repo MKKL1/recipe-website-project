@@ -7,7 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
-  Put, Query,
+
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -25,10 +25,6 @@ import { GetUser } from '../users/decorators/getuser.decorator';
 import { SerializeInterceptor } from '../interceptors/serialize.interceptor';
 import { RecipeDto } from './dto/recipe.dto';
 import { User } from '../users/schemas/users.schema';
-import { PaginationOptionsDto } from '../pagination/pagination-options.dto';
-import { PaginationResultDto } from '../pagination/pagination-result.dto';
-import { plainToClassFromExist, plainToInstance } from 'class-transformer';
-import { RecipePaginationDto } from './dto/recipe-pagination.dto';
 
 @ApiTags('Recipe')
 @Controller('recipe')
@@ -61,14 +57,18 @@ export class RecipeController {
   @UseGuards(RolesGuard)
   @Roles('admin')
   @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Create recipe (admin)' })
   @ApiBearerAuth('access-token')
   @ApiOkResponse({})
   async createRecipe(
     @GetUser() user: User,
-    @Body() createRecipeDto: CreateRecipeDto,
+    @UploadedFile() image: Express.Multer.File,
+    @Body() body,
   ) {
-    await this.recipeService.create(createRecipeDto, user);
+    // I don't know how to receive it in better way
+    const createRecipeDto = JSON.parse(body.recipe);
+    await this.recipeService.create(user, createRecipeDto, image);
   }
 
   @Put(':id')

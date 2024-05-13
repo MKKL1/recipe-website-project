@@ -12,6 +12,8 @@ import Profile from "./components/pages/Profile.tsx";
 
 function App() {
 
+    // TODO Add guard for routes based on roles
+
   return (
     <AuthProvider>
         <div>

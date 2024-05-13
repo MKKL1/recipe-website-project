@@ -20,12 +20,20 @@ export class RecipeService {
     return this.recipeModel.findById(id).exec();
   }
 
-  async create(createRecipeDto: CreateRecipeDto, user: User): Promise<Recipe> {
-    const createdCat = new this.recipeModel({
-      ...createRecipeDto,
+  async create(user: User, recipeDto: CreateRecipeDto, image: Express.Multer.File): Promise<Recipe> {
+    console.log(user);
+    console.log(recipeDto);
+    console.log(image);
+
+    // TODO add saving image
+
+    const recipe = new this.recipeModel({
       author_id: user._id,
+      title: recipeDto.title,
+      content: recipeDto.content
     });
-    return createdCat.save();
+
+    return recipe.save();
   }
 
   async updateRecipe(id: string, createRecipeDto: CreateRecipeDto) {
