@@ -23,6 +23,7 @@ export default function Register(){
         password: Yup.string()
             .required("Password is required"),
         passwordConfirm: Yup.string()
+            .oneOf([Yup.ref('password')], "Passwords don't match!")
             .required("Password confirm is required")
     });
 

@@ -24,27 +24,14 @@ export class UsersService {
     }
 
     async update(user: User, userUpdateDTO: UserUpdateDto){
-        // const user = await this.userModel.findOneAndUpdate(
-        //     {_id: id},
-        //     {$set: userUpdateDTO},
-        //     {new: true}
-        // ).exec();
-
-        console.log(user);
-        console.log(userUpdateDTO);
-
         user.username = userUpdateDTO.username;
         user.email = userUpdateDTO.email;
 
-        const updatedUser = this.userModel.findOneAndUpdate(
+        return this.userModel.findOneAndUpdate(
             {_id: user._id},
             {$set: user},
             {new: true}
         ).exec();
-
-        console.log(updatedUser);
-
-        return updatedUser;
     }
 
     // async updatePassword(id: string, passwordDTO: PasswordDto){
