@@ -6,7 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Post,
+  Post, Put, Query, UploadedFile,
 
   UseGuards,
   UseInterceptors,
@@ -25,6 +25,9 @@ import { GetUser } from '../users/decorators/getuser.decorator';
 import { SerializeInterceptor } from '../interceptors/serialize.interceptor';
 import { RecipeDto } from './dto/recipe.dto';
 import { User } from '../users/schemas/users.schema';
+import {RecipePaginationDto} from "./dto/recipe-pagination.dto";
+import {PaginationOptionsDto} from "../pagination/pagination-options.dto";
+import {FileInterceptor} from "@nestjs/platform-express";
 
 @ApiTags('Recipe')
 @Controller('recipe')

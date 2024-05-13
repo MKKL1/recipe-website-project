@@ -1,4 +1,4 @@
-import { Model, PaginateModel } from 'mongoose';
+import {Model, PaginateModel} from 'mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Recipe } from './schemas/recipe.schema';
