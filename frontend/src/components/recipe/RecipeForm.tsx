@@ -12,31 +12,37 @@ import {OutputData} from "@editorjs/editorjs";
 export default function RecipeForm(){
     const {token} = useAuthContext();
     const [data, setData] = useState({});
+    const [file, setFile] = useState(null);
+
+    function handleFile(event: any){
+        if(event.target.files){
+            setFile(event.target.files[0]);
+        }
+    }
 
     async function onSubmit(values){
         console.log(values);
         console.log(token);
         console.log(data);
+        console.log(file);
+
+        const recipeData = {
+          title: values.title,
+          content: data
+        };
 
         // can't send formdata to backend -> returns error
         let formData = new FormData();
-        formData.append('title', values.title);
-        //formData.append('image', values.image);
-        formData.append('image', "aaaaaa");
-        //formData.append('content', JSON.stringify(data));
-        formData.append('content', JSON.stringify(data));
+        // @ts-ignore
+        formData.append('image', file);
+        formData.append('recipe', JSON.stringify(recipeData));
 
         // TODO handle response
         axios.post(environment.apiUrl + "recipe",
-            {
-                title: values.title,
-                content: JSON.stringify(data),
-                // cannot send image
-                image_id: 'dsadsadsadsa'
-            },
+            formData,
             {headers: {
-                Authorization: `Bearer ${token}`
-                //"Content-Type": "multipart/form-data"
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data"
             }})
             .then(res => {
                 console.log(res);
@@ -64,10 +70,7 @@ export default function RecipeForm(){
                                     <Form.Control type="text" name="title" onChange={handleChange} placeholder="Enter recipe title"></Form.Control>
                                 </FormGroup>
                                 <FormGroup>
-                                    <input id="file" name="file" type="file" onChange={(event) => {
-                                        // @ts-ignore
-                                        setFieldValue("file", event.currentTarget.files[0]);
-                                    }}/>
+                                    <input id="file" name="file" type="file" onChange={handleFile}/>
                                 </FormGroup>
                                 <Button type="submit">Add Recipe</Button>
                             </Form>

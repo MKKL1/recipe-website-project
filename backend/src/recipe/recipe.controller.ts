@@ -7,7 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
-  Put,
+  Put, UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -25,6 +25,7 @@ import { GetUser } from '../users/decorators/getuser.decorator';
 import { SerializeInterceptor } from '../interceptors/serialize.interceptor';
 import { RecipeDto } from './dto/recipe.dto';
 import { User } from '../users/schemas/users.schema';
+import {FileInterceptor} from "@nestjs/platform-express";
 
 @ApiTags('Recipe')
 @Controller('recipe')
@@ -54,22 +55,22 @@ export class RecipeController {
     return this.recipeService.getOneRecipe(id);
   }
 
-  // string isn't valid format for file upload
   @Post()
   @UseGuards(RolesGuard)
   @Roles('admin')
   @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Create recipe (admin)' })
   @ApiBearerAuth('access-token')
   @ApiOkResponse({})
   async createRecipe(
     @GetUser() user: User,
-    @Body() createRecipeDto: CreateRecipeDto,
+    @UploadedFile() image: Express.Multer.File,
+    @Body() body,
   ) {
-    // cannot receive formData
-    // content and image shouldn't be string
-    console.log(createRecipeDto);
-    await this.recipeService.create(createRecipeDto, user);
+    // I don't know how to receive it in better way
+    const createRecipeDto = JSON.parse(body.recipe);
+    await this.recipeService.create(user, createRecipeDto, image);
   }
 
   @Put(':id')

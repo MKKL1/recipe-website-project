@@ -15,10 +15,10 @@ export class CreateRecipeDto {
     minLength: 6,
     maxLength: 255,
   })
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(6)
-  @MaxLength(255)
+  // @IsNotEmpty()
+  // @IsString()
+  // @MinLength(6)
+  // @MaxLength(255)
   readonly title: string;
 
   @ApiProperty({
@@ -28,17 +28,7 @@ export class CreateRecipeDto {
   })
   // for testing
   // @IsNotEmpty()
-  @IsOptional()
-  @IsString()
+  // @IsOptional()
+  // @IsString()
   readonly content: string;
-
-  @ApiProperty({
-    example:
-      'https://preppykitchen.com/wp-content/uploads/2022/03/Artisan-Bread-Recipe-Card-500x500.jpg',
-    description: 'For now use url to image until I make image storage',
-    format: 'string',
-  })
-  @IsOptional()
-  @IsString()
-  image_id: string;
 }
