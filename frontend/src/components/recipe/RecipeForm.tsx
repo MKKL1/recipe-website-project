@@ -6,46 +6,37 @@ import {useAuthContext} from "../../contexts/AuthContext.tsx";
 import {createReactEditorJS} from "react-editor-js";
 import Editor from "./RecipeEditor.tsx";
 import {useState} from "react";
+import {OutputData} from "@editorjs/editorjs";
 
 // two editors are made and one is broken
 export default function RecipeForm(){
     const {token} = useAuthContext();
-    const ReactEditorJs = createReactEditorJS();
-    const [data, setData] = useState( {
-        time: 1635603431943,
-        blocks: [
-            {
-                id: "-MhwnSs3Dw",
-                type: "header",
-                data: {
-                    text: "What does it mean «block-styled editor»"
-                }
-            },
-            {
-                id: "Ptb9oEioJn",
-                type: "paragraph",
-                data: {
-                    text:
-                        'Workspace in classic editors is made of a single contenteditable element, used to create different HTML markups. Editor.js <mark class="cdx-marker">workspace consists of separate Blocks: paragraphs, headings, images, lists, quotes, etc</mark>. Each of them is an independent contenteditable element (or more complex structure) provided by Plugin and united by Editor\'s Core.'
-                }
-            }
-        ]
-    });
+    const [data, setData] = useState({});
 
     async function onSubmit(values){
         console.log(values);
         console.log(token);
+        console.log(data);
 
+        // can't send formdata to backend -> returns error
         let formData = new FormData();
         formData.append('title', values.title);
-        formData.append('image', values.image);
+        //formData.append('image', values.image);
+        formData.append('image', "aaaaaa");
+        //formData.append('content', JSON.stringify(data));
+        formData.append('content', JSON.stringify(data));
 
         // TODO handle response
         axios.post(environment.apiUrl + "recipe",
-            formData,
+            {
+                title: values.title,
+                content: JSON.stringify(data),
+                // cannot send image
+                image_id: 'dsadsadsadsa'
+            },
             {headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "multipart/form-data"
+                Authorization: `Bearer ${token}`
+                //"Content-Type": "multipart/form-data"
             }})
             .then(res => {
                 console.log(res);
@@ -55,6 +46,10 @@ export default function RecipeForm(){
             });
     }
 
+    function saveTextEditorState(outputData: OutputData){
+        console.log("w recipeform: ", data);
+        setData(outputData);
+    }
 
     return (
         <>
@@ -79,7 +74,7 @@ export default function RecipeForm(){
                             </Form>
                         )}
                     </Formik>
-                    <Editor data={data} setData={setData}/>
+                    <Editor onSave={saveTextEditorState}/>
                 </Card.Body>
             </Card>
         </>

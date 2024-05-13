@@ -66,6 +66,9 @@ export class RecipeController {
     @GetUser() user: User,
     @Body() createRecipeDto: CreateRecipeDto,
   ) {
+    // cannot receive formData
+    // content and image shouldn't be string
+    console.log(createRecipeDto);
     await this.recipeService.create(createRecipeDto, user);
   }
 

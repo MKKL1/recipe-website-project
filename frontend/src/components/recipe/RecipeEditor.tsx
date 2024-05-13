@@ -3,43 +3,45 @@ import {default as React, useCallback, useEffect, useRef} from 'react';
 import Header from '@editorjs/header';
 // @ts-ignore
 import List from '@editorjs/list';
-import {createReactEditorJS} from "react-editor-js";
+import EditorJS, {EditorConfig, OutputData} from "@editorjs/editorjs";
+import {Button} from "react-bootstrap";
 
-export default function Editor({ data, setData }) {
-    const editorCore = useRef(null);
-    const ReactEditorJS = createReactEditorJS();
+// TODO fixed issues with editor instance state
+// after saving data for some reason two new instances of editor are created
+export default function Editor({onSave}: any){
+    const editor = new EditorJS({
+        holder: 'editorjs',
+        tools: {
+            header: Header,
+            list: List
+        },
+        onReady: () => {
+            console.log('Editor.js is ready to work!')
+        }
+    });
 
-    const handleInitialize = useCallback((instance: any) => {
-        // await instance._editorJS.isReady;
-        instance._editorJS.isReady
-            .then(() => {
-                editorCore.current = instance;
-            })
-            .catch((err: any) => {
-                console.log("An error occured", err)
-            });
-    }, []);
-
-    const handleSave = useCallback(async () => {
-        // @ts-ignore
-        const savedData = await editorCore.current.save();
-        setData(savedData);
-    }, [setData]);
-
-    const EDITOR_JS_TOOLS = {
-        list: List,
-        header: Header,
-    };
+    function saveText(){
+        editor.save().then((outputData) => {
+            console.log('Article data: ', outputData)
+            onSave(outputData);
+        }).catch((error) => {
+            console.log('Saving failed: ', error)
+        });
+    }
 
     return (
-        <div className="editor-container">
-            <h4 className="edit-mode-alert">! Edit Mode Enabled</h4>
-            <ReactEditorJS
-                onInitialize={handleInitialize}
-                tools={EDITOR_JS_TOOLS}
-                onChange={handleSave}
-                defaultValue={data}
-            />
+        <div>
+            <div id="editorjs"></div>
+            <Button onClick={saveText}>Save text</Button>
         </div>
     );
 }
+
+// editor.isReady
+//     .then(() => {
+//         console.log('Editor.js is ready to work!')
+//         /** Do anything you need after editor initialization */
+//     })
+//     .catch((reason) => {
+//         console.log(`Editor.js initialization failed because of ${reason}`)
+//     });

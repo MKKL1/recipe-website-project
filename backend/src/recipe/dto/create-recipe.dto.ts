@@ -28,6 +28,7 @@ export class CreateRecipeDto {
   })
   // for testing
   // @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly content: string;
 
