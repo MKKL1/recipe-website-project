@@ -6,10 +6,12 @@ import {object} from "yup";
 import axios from "axios";
 import {environment} from "../../../environment.ts";
 import { useAuthContext} from "../../contexts/AuthContext.tsx";
+import {useNavigate} from "react-router-dom";
 
 
 export default function Login(){
-    const {token, updateToken} = useAuthContext();
+    const {updateToken} = useAuthContext();
+    const navigate = useNavigate();
 
     const loginSchema = object({
         username: Yup.string()
@@ -22,12 +24,11 @@ export default function Login(){
         console.log(values);
 
         // send request to backend
-        // user model isn't returned
-        // I don't know if it should return 401
         axios.post(environment.apiUrl + "auth/login", values)
             .then(res => {
                 const accessToken = res.data.access_token;
                 updateToken(accessToken);
+                navigate('/recipes');
             })
             .catch(err => {
                 console.error(err);
@@ -36,7 +37,6 @@ export default function Login(){
 
     return (
         <>
-            <p>{token}</p>
             <Card className="form-container">
                 <Card.Body>
                     <Card.Title className="text-center">Sign in</Card.Title>

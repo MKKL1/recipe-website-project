@@ -5,8 +5,13 @@ import * as Yup from 'yup';
 import {object} from "yup";
 import axios from "axios";
 import {environment} from "../../../environment.ts";
+import {useAuthContext} from "../../contexts/AuthContext.tsx";
+import {useNavigate} from "react-router-dom";
 
 export default function Register(){
+    const {updateToken} = useAuthContext();
+    const navigate = useNavigate();
+
     // TODO check if password are identical
     const registrationSchema = object({
         username: Yup.string()
@@ -25,14 +30,15 @@ export default function Register(){
         console.log(values);
 
         // TODO Show toast with info, redirect to another page and change nav if success
-        // password is sent back to user
-        axios.post(environment.apiUrl + "users", {
+        axios.post(environment.apiUrl + "auth/register", {
             username: values.username,
             email: values.email,
             password: values.password
         })
         .then(res => {
-            console.log(res);
+            const accessToken = res.data.access_token;
+            updateToken(accessToken);
+            navigate('/recipes');
         })
         .catch(err => {
             console.error(err);
