@@ -26,6 +26,7 @@ export class AuthService {
   }
 
   async getJwtToken(user: User) {
+    // cannot get email and roles
     const payload = {
       sub: user._id,
       username: user.username,
