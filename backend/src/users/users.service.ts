@@ -1,11 +1,11 @@
-import {Injectable, UnauthorizedException} from '@nestjs/common';
+import {BadRequestException, Injectable, UnauthorizedException} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import {Model, Schema, Types} from 'mongoose';
+import {Model, Types} from 'mongoose';
 import { User } from './schemas/users.schema';
 import { CreateUserDto } from './dto/create-user.dto';
-import {UserDto} from "./dto/user.dto";
 import * as bcrypt from 'bcrypt';
 import {UserUpdateDto} from "./dto/user-update.dto";
+import {PasswordDto} from "./dto/password-dto";
 
 @Injectable()
 export class UsersService {
@@ -34,21 +34,28 @@ export class UsersService {
         ).exec();
     }
 
-    // async updatePassword(id: string, passwordDTO: PasswordDto){
-    //     const user = await this.userModel.findById(id).exec();
-    //
-    //     // don't work
-    //     if(await bcrypt.compare(passwordDTO.oldPassword, user.password)){
-    //       throw new UnauthorizedException();
-    //     }
-    //
-    //     user.password = passwordDTO.newPassword;
-    //     return await this.userModel.updateOne(
-    //         {_id: id},
-    //         {$set: user},
-    //         {new: true}
-    //     ).exec();
-    // }
+    async updatePassword(user: User, passwordDTO: PasswordDto){
+        // old and new password cannot be the same
+        if(passwordDTO.oldPassword === passwordDTO.newPassword){
+            throw new BadRequestException();
+        }
+
+        if(await bcrypt.compare(passwordDTO.newPassword, user.password)){
+            throw new BadRequestException();
+        }
+
+        if(!await bcrypt.compare(passwordDTO.oldPassword, user.password)){
+          throw new BadRequestException();
+        }
+
+        user.password = await bcrypt.hash(passwordDTO.newPassword, 10);
+
+        return this.userModel.updateOne(
+            {_id: user._id},
+            {$set: user},
+            {new: true}
+        ).exec();
+    }
 
     async delete(id: Types.ObjectId): Promise<User>{
         return await this.userModel.findOneAndDelete({_id: id}).exec();
