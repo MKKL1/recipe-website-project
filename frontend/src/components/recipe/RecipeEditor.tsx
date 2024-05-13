@@ -1,37 +1,44 @@
-import {default as React, useCallback, useEffect, useRef} from 'react';
+import {default as React, useEffect, useRef} from 'react';
 // @ts-ignore
 import Header from '@editorjs/header';
 // @ts-ignore
 import List from '@editorjs/list';
 import EditorJS, {EditorConfig, OutputData} from "@editorjs/editorjs";
 import {Button} from "react-bootstrap";
+import '../../styles/Editor.css';
 
-// TODO fixed issues with editor instance state
-// after saving data for some reason two new instances of editor are created
+// TODO Add new interesting plugins to editor
 export default function Editor({onSave}: any){
-    const editor = new EditorJS({
-        holder: 'editorjs',
-        tools: {
-            header: Header,
-            list: List
-        },
-        onReady: () => {
-            console.log('Editor.js is ready to work!')
+    const editorRef = useRef<EditorJS | null>(null);
+
+    useEffect(() => {
+        if(!editorRef.current){
+            editorRef.current = new EditorJS({
+                holder: 'editorjs',
+                tools: {
+                    header: Header,
+                    list: List
+                },
+                onReady: () => {
+                    console.log('Editor.js is ready to work!')
+                }
+            });
         }
-    });
+    }, []);
 
     function saveText(){
-        editor.save().then((outputData) => {
-            console.log('Article data: ', outputData)
-            onSave(outputData);
-        }).catch((error) => {
-            console.log('Saving failed: ', error)
-        });
+        if(editorRef.current){
+            editorRef.current.save().then((outputData) => {
+                onSave(outputData);
+            }).catch((error) => {
+                console.log('Saving failed: ', error)
+            });
+        }
     }
 
     return (
         <div>
-            <div id="editorjs"></div>
+            <div id="editorjs" className="editor"></div>
             <Button onClick={saveText}>Save text</Button>
         </div>
     );

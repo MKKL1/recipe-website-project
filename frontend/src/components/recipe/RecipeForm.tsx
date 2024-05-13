@@ -47,7 +47,6 @@ export default function RecipeForm(){
     }
 
     function saveTextEditorState(outputData: OutputData){
-        console.log("w recipeform: ", data);
         setData(outputData);
     }
 
