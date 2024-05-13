@@ -1,16 +1,19 @@
-import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Model, PaginateModel } from 'mongoose';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Recipe } from './schemas/recipe.schema';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { User } from '../users/schemas/users.schema';
+import { PaginationOptionsDto } from '../pagination/pagination-options.dto';
+import { paginateTool } from '../pagination/pagination.util';
 
 @Injectable()
 export class RecipeService {
-  constructor(@InjectModel(Recipe.name) private recipeModel: Model<Recipe>) {}
+  constructor(@InjectModel(Recipe.name) private recipeModel: Model<Recipe>,
+              @InjectModel(Recipe.name) private recipeModelPag: PaginateModel<Recipe>) {}
 
-  async findAll(): Promise<Recipe[]> {
-    return this.recipeModel.find().exec();
+  async findAll(paginationOptionsDto: PaginationOptionsDto): Promise<any> {
+    return paginateTool(this.recipeModelPag, paginationOptionsDto);
   }
 
   async getOneRecipe(id: string): Promise<Recipe> {
