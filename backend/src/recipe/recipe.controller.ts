@@ -7,7 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
-  Put, UploadedFile,
+
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -25,7 +25,6 @@ import { GetUser } from '../users/decorators/getuser.decorator';
 import { SerializeInterceptor } from '../interceptors/serialize.interceptor';
 import { RecipeDto } from './dto/recipe.dto';
 import { User } from '../users/schemas/users.schema';
-import {FileInterceptor} from "@nestjs/platform-express";
 
 @ApiTags('Recipe')
 @Controller('recipe')
@@ -33,15 +32,14 @@ export class RecipeController {
   constructor(private readonly recipeService: RecipeService) {}
 
   @Get()
-  @UseInterceptors(new SerializeInterceptor<RecipeDto>(RecipeDto))
   @ApiOperation({ summary: 'Get all recipes' })
+  @UseInterceptors(new SerializeInterceptor<RecipePaginationDto>(RecipePaginationDto))
   @ApiOkResponse({
     description: 'Recipe record',
-    type: RecipeDto,
-    isArray: true,
+    type: RecipePaginationDto
   })
-  async findAll() {
-    return this.recipeService.findAll();
+  async findAll(@Query() paginationOptionsDto: PaginationOptionsDto) {
+    return this.recipeService.findAll(paginationOptionsDto);
   }
 
   @Get(':id')
