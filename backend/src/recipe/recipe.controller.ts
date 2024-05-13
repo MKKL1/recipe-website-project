@@ -54,6 +54,7 @@ export class RecipeController {
     return this.recipeService.getOneRecipe(id);
   }
 
+  // string isn't valid format for file upload
   @Post()
   @UseGuards(RolesGuard)
   @Roles('admin')

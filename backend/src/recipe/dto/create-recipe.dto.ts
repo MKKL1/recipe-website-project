@@ -26,7 +26,8 @@ export class CreateRecipeDto {
     description: 'Content of recipe in json?',
     format: 'string',
   })
-  @IsNotEmpty()
+  // for testing
+  // @IsNotEmpty()
   @IsString()
   readonly content: string;
 
