@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { IsUniqueConstraint } from './validators/unique.validator';
 import { CommentsModule } from './comments/comments.module';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CommentsModule } from './comments/comments.module';
     UsersModule,
     AuthModule,
     CommentsModule,
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [AppService, IsUniqueConstraint],
