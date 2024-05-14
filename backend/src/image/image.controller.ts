@@ -17,10 +17,10 @@ export class ImageController {
   //pain
   //TODO create our own file saving process
   @Post()
-  @UseInterceptors(FileInterceptor('file', {storage: storage}))
+  @UseInterceptors(FileInterceptor('image', {storage: storage}))
   @ApiOperation({ summary: 'Get all recipes' })
-  async saveImage(@Headers() headers, @UploadedFile() file: Express.Multer.File) {
-    const imageModel = await this.imageService.saveFile(file)
+  async saveImage(@Headers() headers, @UploadedFile() image: Express.Multer.File) {
+    const imageModel = await this.imageService.saveFile(image)
     return {
       success: 1,
       file: {

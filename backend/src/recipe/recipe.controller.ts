@@ -28,6 +28,7 @@ import { User } from '../users/schemas/users.schema';
 import {RecipePaginationDto} from "./dto/recipe-pagination.dto";
 import {PaginationOptionsDto} from "../pagination/pagination-options.dto";
 import {FileInterceptor} from "@nestjs/platform-express";
+import { storage } from '../image/file-storage';
 
 @ApiTags('Recipe')
 @Controller('recipe')
@@ -60,7 +61,7 @@ export class RecipeController {
   @UseGuards(RolesGuard)
   @Roles('admin')
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('image', {storage: storage}))
   @ApiOperation({ summary: 'Create recipe (admin)' })
   @ApiBearerAuth('access-token')
   @ApiOkResponse({})

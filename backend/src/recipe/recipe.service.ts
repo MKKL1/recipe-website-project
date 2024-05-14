@@ -1,16 +1,18 @@
 import {Model, PaginateModel} from 'mongoose';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Recipe } from './schemas/recipe.schema';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { User } from '../users/schemas/users.schema';
 import { PaginationOptionsDto } from '../pagination/pagination-options.dto';
 import { paginateTool } from '../pagination/pagination.util';
+import { ImageService } from '../image/image.service';
 
 @Injectable()
 export class RecipeService {
   constructor(@InjectModel(Recipe.name) private recipeModel: Model<Recipe>,
-              @InjectModel(Recipe.name) private recipeModelPag: PaginateModel<Recipe>) {}
+              @InjectModel(Recipe.name) private recipeModelPag: PaginateModel<Recipe>,
+              private readonly imageService: ImageService) {}
 
   async findAll(paginationOptionsDto: PaginationOptionsDto): Promise<any> {
     return paginateTool(this.recipeModelPag, paginationOptionsDto);
@@ -21,16 +23,12 @@ export class RecipeService {
   }
 
   async create(user: User, recipeDto: CreateRecipeDto, image: Express.Multer.File): Promise<Recipe> {
-    console.log(user);
-    console.log(recipeDto);
-    console.log(image);
-
-    // TODO add saving image
-
+    const saved = await this.imageService.saveFile(image);
     const recipe = new this.recipeModel({
       author_id: user._id,
       title: recipeDto.title,
-      content: recipeDto.content
+      content: recipeDto.content,
+      image_id: saved._id
     });
 
     return recipe.save();

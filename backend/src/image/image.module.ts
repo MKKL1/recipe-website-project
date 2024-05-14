@@ -8,6 +8,7 @@ import { Image, ImageSchema } from './schemas/image.schema';
   imports: [
     MongooseModule.forFeature([{ name: Image.name, schema: ImageSchema }]),
   ],
+  exports: [ImageService],
   controllers: [ImageController],
   providers: [ImageService],
 })

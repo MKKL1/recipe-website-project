@@ -21,5 +21,6 @@ export class RecipeDto {
   @Expose()
   content: string;
   @Expose()
+  @Transform((value) => value.obj._id.toString())
   image_id: string;
 }

@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types, Schema as S } from 'mongoose';
 import { User } from '../../users/schemas/users.schema';
 import * as paginate from "mongoose-paginate-v2";
+import { Image } from '../../image/schemas/image.schema';
 
 export type RecipeDocument = HydratedDocument<Recipe>;
 
@@ -18,8 +19,8 @@ export class Recipe {
   @Prop()
   content: S.Types.Mixed;
 
-  // @Prop()
-  // image_id: string;
+  @Prop({ type: Types.ObjectId, ref: Image.name })
+  image_id: Image;
 }
 
 export const RecipeSchema = SchemaFactory.createForClass(Recipe);

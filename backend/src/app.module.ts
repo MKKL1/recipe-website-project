@@ -7,8 +7,6 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { IsUniqueConstraint } from './validators/unique.validator';
 import { CommentsModule } from './comments/comments.module';
-import { ImageService } from './image/image.service';
-import { ImageController } from './image/image.controller';
 import { ImageModule } from './image/image.module';
 
 @Module({
