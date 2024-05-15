@@ -59,7 +59,7 @@ export default function Register(){
                                 <Form onSubmit={handleSubmit} noValidate>
                                     <FormGroup controlId="username" className="mb-3">
                                         <Form.Label>Username</Form.Label>
-                                        <Form.Control type="username" name="username" placeholder="Enter your username" onChange={handleChange}/>
+                                        <Form.Control type="text" name="username" placeholder="Enter your username" onChange={handleChange}/>
                                         {errors.username && <Alert style={{marginTop: '10px'}} variant="danger">{errors.username}</Alert>}
                                     </FormGroup>
                                     <FormGroup controlId="email" className="mb-3">

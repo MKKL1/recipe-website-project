@@ -39,6 +39,7 @@ export class RecipeService {
   }
 
   async deleteRecipe(id: string) {
+    // is image deleted?
     return this.recipeModel.findByIdAndDelete(id);
   }
 }

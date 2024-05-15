@@ -23,9 +23,8 @@ export class RecipeOverviewDto{
     title: string;
 
     // same as with author??
-    // why it is same as recipe id?
     @Expose()
-    @Transform((value) => value.obj._id.toString())
+    @Transform((value) => value.obj.image_id.toString())
     image_id: string;
 
     // add created date?

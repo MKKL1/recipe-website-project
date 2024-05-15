@@ -8,7 +8,8 @@ export default function RecipeElement({recipe}: {recipe: RecipeOverview}){
     return (
         <>
             <h1>Recipe</h1>
-            <img src={environment.apiUrl + "image/" + recipe.image_id} alt={recipe.title}/>
+            <img src={environment.apiUrl + "image/" + recipe.image_id} alt={recipe.title}
+            style={{width: 200, height: 200}}/>
             <p>Title {recipe.title}</p>
             <p>Author {recipe.author_id}</p>
             <p>Image {recipe.image_id}</p>
