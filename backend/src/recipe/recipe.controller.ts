@@ -72,7 +72,7 @@ export class RecipeController {
   ) {
     // I don't know how to receive it in better way
     const createRecipeDto = JSON.parse(body.recipe);
-    await this.recipeService.create(user, createRecipeDto, image);
+    return await this.recipeService.create(user, createRecipeDto, image);
   }
 
   @Put(':id')

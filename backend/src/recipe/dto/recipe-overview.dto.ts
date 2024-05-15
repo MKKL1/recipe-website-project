@@ -12,7 +12,9 @@ export class RecipeOverviewDto{
 
     // get author data instead of id?
     @Expose()
-    @Transform((value) => value.obj.author_id.toString())
+    @Transform((value) => {
+        value.obj.author_id.toString()
+    })
     @ApiProperty({
         description: 'Id of author',
         examples: ['507f191e810c19729de860ea'],

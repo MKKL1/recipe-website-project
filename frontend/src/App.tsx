@@ -8,6 +8,7 @@ import Login from "./components/pages/Login.tsx";
 import RecipeForm from "./components/recipe/RecipeForm.tsx";
 import { AuthProvider } from './contexts/AuthContext.tsx';
 import Profile from "./components/pages/Profile.tsx";
+import RecipeDetails from "./components/recipe/RecipeDetails.tsx";
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
                     <Route path='/register' Component={Register}/>
                     <Route path='/add' Component={RecipeForm}/>
                     <Route path='/recipes' Component={Recipes}/>
+                    <Route path='/recipe-details' Component={RecipeDetails}/>
                     <Route path='/profile' Component={Profile}/>
                 </Routes>
             </BrowserRouter>

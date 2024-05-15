@@ -24,14 +24,14 @@ export class RecipeService {
 
   async create(user: User, recipeDto: CreateRecipeDto, image: Express.Multer.File): Promise<Recipe> {
     const saved = await this.imageService.saveFile(image);
-    const recipe = new this.recipeModel({
+    const recipe = await new this.recipeModel({
       author_id: user._id,
       title: recipeDto.title,
       content: recipeDto.content,
       image_id: saved._id
-    });
+    }).save();
 
-    return recipe.save();
+    return recipe;
   }
 
   async updateRecipe(id: string, createRecipeDto: CreateRecipeDto) {

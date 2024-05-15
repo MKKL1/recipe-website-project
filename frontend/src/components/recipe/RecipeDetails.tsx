@@ -1,24 +1,57 @@
 import {Recipe} from "../../models/Recipe.ts";
-import {useRecipeContext} from "../../contexts/RecipeContext.tsx";
-import {ref} from "yup";
-import {Button, Stack} from "react-bootstrap";
+import {Button, Modal, Stack} from "react-bootstrap";
 import {useAuthContext} from "../../contexts/AuthContext.tsx";
 import Editor from "./RecipeEditor.tsx";
 import Comments from "../comment/Comments.tsx";
 import {environment} from "../../../environment.ts";
+import {useLocation, useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
+import axios from "axios";
 
 export default function RecipeDetails(){
-    const {recipe} = useRecipeContext();
-    const {user, isAuth} = useAuthContext();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {user, isAuth, token} = useAuthContext();
+
+    const [recipe, setRecipe] = useState(new Recipe('','','',[],''));
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const handleCloseConfirm = () => setShowConfirm(false);
+    const handleShowConfirm = () => setShowConfirm(true);
+
+    useEffect(() => {
+        axios.get(environment.apiUrl + "recipe/" + location.state.recipeId)
+            .then(res => {
+                setRecipe(res.data);
+            })
+            .catch(err => {
+                console.error(err);
+            })
+    }, []);
 
     function onEdit(){
         console.log("Editing...");
         // add editing
+        navigate('/add', {
+            state: {
+                update: true,
+                recipe: recipe
+            }
+        });
     }
 
     function onDelete(){
         console.log("Deleting...");
         // add deleting
+        axios.delete(environment.apiUrl + "recipe/" + recipe._id,
+            {headers: { Authorization: `Bearer ${token}`}})
+            .then(res => {
+                console.log(res);
+                navigate('/recipes');
+            })
+            .catch(err => {
+                console.log(err);
+            })
     }
 
     return (
@@ -31,7 +64,7 @@ export default function RecipeDetails(){
                     isAuth && user.id === recipe.author_id &&
                     <div>
                         <Button onClick={onEdit}>Edit</Button>
-                        <Button onClick={onDelete} variant="danger">Delete</Button>
+                        <Button onClick={() => setShowConfirm(true)} variant="danger">Delete</Button>
                     </div>
                 }
             </span>
@@ -44,6 +77,23 @@ export default function RecipeDetails(){
             <Editor onSave={() => {}} initData={recipe.content} readOnly={true}/>
             {/*  Comments section  */}
             <Comments/>
+            {/* Modal for delete confirmation*/}
+            <Modal show={showConfirm} onHide={handleCloseConfirm} animation={false}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Modal heading</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h1>Are you sure you want to delete this recipe?</h1>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseConfirm}>
+                        Close
+                    </Button>
+                    <Button variant="danger" onClick={onDelete}>
+                        Delete recipe
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Stack>
     );
 }

@@ -4,13 +4,31 @@ import {Button, Card, Form, FormGroup, FormLabel} from "react-bootstrap";
 import {Formik} from "formik";
 import {useAuthContext} from "../../contexts/AuthContext.tsx";
 import Editor from "./RecipeEditor.tsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {OutputData} from "@editorjs/editorjs";
+import {useLocation, useNavigate} from "react-router-dom";
+import {Recipe} from "../../models/Recipe.ts";
 
+// TODO validate input
 export default function RecipeForm(){
+    const navigate = useNavigate();
+    const location = useLocation();
     const {token} = useAuthContext();
     const [data, setData] = useState({});
     const [file, setFile] = useState(null);
+    const [recipeToEdit, setRecipeToEdit] = useState(new Recipe('','','',[],''));
+
+    // checking if entered in editing mode
+    // if so initialize fields with data
+    useEffect(() => {
+        if(!location.state.update){
+            return;
+        }
+
+        console.log(location.state.recipe);
+        // don't work because async
+        setRecipeToEdit(location.state.recipe);
+    }, []);
 
     function handleFile(event: any){
         if(event.target.files){
@@ -29,7 +47,7 @@ export default function RecipeForm(){
         formData.append('image', file);
         formData.append('recipe', JSON.stringify(recipeData));
 
-        // TODO handle response
+        // TODO handle error
         axios.post(environment.apiUrl + "recipe",
             formData,
             {headers: {
@@ -37,7 +55,7 @@ export default function RecipeForm(){
                 "Content-Type": "multipart/form-data"
             }})
             .then(res => {
-                console.log(res);
+                navigate('/recipe-details', {state: {recipeId: res.data._id}});
             })
             .catch(err => {
                 console.error(err);
@@ -68,7 +86,7 @@ export default function RecipeForm(){
                             </Form>
                         )}
                     </Formik>
-                    <Editor onSave={saveTextEditorState} editting={false} initData={{}}/>
+                    <Editor onSave={saveTextEditorState} readOnly={false} initData={recipeToEdit.content}/>
                 </Card.Body>
             </Card>
         </>

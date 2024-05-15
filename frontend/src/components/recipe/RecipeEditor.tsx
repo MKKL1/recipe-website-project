@@ -9,13 +9,10 @@ import EditorJS, {EditorConfig, OutputData} from "@editorjs/editorjs";
 import {Button} from "react-bootstrap";
 import '../../styles/Edtior.css';
 import {environment} from "../../../environment.ts";
-import {useRecipeContext} from "../../contexts/RecipeContext.tsx";
 
 // TODO Add new interesting plugins to editor
-// cant load initData into component
 export default function Editor({onSave, initData, readOnly}){
     const editorRef = useRef<EditorJS | null>(null);
-    const {recipe} = useRecipeContext();
 
     useEffect(() => {
         if(!editorRef.current){
@@ -43,18 +40,21 @@ export default function Editor({onSave, initData, readOnly}){
     }, []);
 
     function saveText(){
-        if(editorRef.current){
-            editorRef.current.save().then((outputData) => {
-                onSave(outputData);
-            }).catch((error) => {
-                console.log('Saving failed: ', error)
-            });
+        if(!readOnly){
+            if(editorRef.current){
+                editorRef.current.save().then((outputData) => {
+                    onSave(outputData);
+                }).catch((error) => {
+                    console.log('Saving failed: ', error)
+                });
+            }
         }
     }
 
     // 💀💀💀💀💀
     useEffect(() => {
         if(editorRef.current && editorRef.current?.render){
+            console.log(initData);
             editorRef.current?.render({blocks: initData.blocks});
         }
     }, [initData]);
