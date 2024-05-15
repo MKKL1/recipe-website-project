@@ -24,6 +24,9 @@ export class RecipeOverviewDto{
     @Expose()
     title: string;
 
+    @Expose()
+    description?: string;
+
     // same as with author??
     @Expose()
     @Transform((value) => value.obj.image_id.toString())

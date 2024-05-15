@@ -13,8 +13,11 @@ export class Recipe {
   @Prop({ type: Types.ObjectId, ref: User.name })
   author_id: User;
 
-  @Prop()
+  @Prop({ required: true })
   title: string;
+
+  @Prop({ required: false })
+  description: string;
 
   @Prop()
   content: S.Types.Mixed;

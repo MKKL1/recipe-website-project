@@ -29,6 +29,7 @@ import {RecipePaginationDto} from "./dto/recipe-pagination.dto";
 import {PaginationOptionsDto} from "../pagination/pagination-options.dto";
 import {FileInterceptor} from "@nestjs/platform-express";
 import { storage } from '../image/file-storage';
+import { JwtPayloadDto } from '../auth/dto/jwt-payload.dto';
 
 @ApiTags('Recipe')
 @Controller('recipe')
@@ -54,7 +55,7 @@ export class RecipeController {
     type: RecipeDto,
   })
   async getOneRecipe(@Param('id') id: string) {
-    return this.recipeService.getOneRecipe(id);
+    return this.recipeService.getOneRecipeWithComments(id, 10, {createdAt: 'asc'});
   }
 
   @Post()

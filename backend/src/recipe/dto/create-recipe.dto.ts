@@ -14,6 +14,7 @@ export class CreateRecipeDto {
     format: 'string',
     minLength: 6,
     maxLength: 255,
+    required: true,
   })
   // @IsNotEmpty()
   // @IsString()
@@ -22,9 +23,20 @@ export class CreateRecipeDto {
   readonly title: string;
 
   @ApiProperty({
-    example: '',
-    description: 'Content of recipe in json?',
+    example: 'This bread is very good like',
+    description: 'Short description of this recipe',
     format: 'string',
+    minLength: 6,
+    maxLength: 255,
+    required: false,
+  })
+  readonly description?: string;
+
+  @ApiProperty({
+    example: '{}',
+    description: 'Content of recipe in json',
+    format: 'json',
+    required: true
   })
   // for testing
   // @IsNotEmpty()
