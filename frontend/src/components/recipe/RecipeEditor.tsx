@@ -9,16 +9,19 @@ import EditorJS, {EditorConfig, OutputData} from "@editorjs/editorjs";
 import {Button} from "react-bootstrap";
 import '../../styles/Edtior.css';
 import {environment} from "../../../environment.ts";
+import {useRecipeContext} from "../../contexts/RecipeContext.tsx";
 
 // TODO Add new interesting plugins to editor
-export default function Editor({onSave}: any){
+// cant load initData into component
+export default function Editor({onSave, initData, readOnly}){
     const editorRef = useRef<EditorJS | null>(null);
-    //const ImageTool = window.ImageTool;
+    const {recipe} = useRecipeContext();
 
     useEffect(() => {
         if(!editorRef.current){
             editorRef.current = new EditorJS({
                 holder: 'editorjs',
+                readOnly: readOnly,
                 tools: {
                     header: Header,
                     list: List,
@@ -33,7 +36,7 @@ export default function Editor({onSave}: any){
                     }
                 },
                 onReady: () => {
-                    console.log('Editor.js is ready to work!')
+                    console.log('Editor.js is ready to work!');
                 }
             });
         }
@@ -49,19 +52,17 @@ export default function Editor({onSave}: any){
         }
     }
 
+    // 💀💀💀💀💀
+    useEffect(() => {
+        if(editorRef.current && editorRef.current?.render){
+            editorRef.current?.render({blocks: initData.blocks});
+        }
+    }, [initData]);
+
     return (
         <div>
             <div id="editorjs" className="editor"></div>
-            <Button onClick={saveText}>Save text</Button>
+            { !readOnly && <Button onClick={saveText}>Save text</Button>}
         </div>
     );
 }
-
-// editor.isReady
-//     .then(() => {
-//         console.log('Editor.js is ready to work!')
-//         /** Do anything you need after editor initialization */
-//     })
-//     .catch((reason) => {
-//         console.log(`Editor.js initialization failed because of ${reason}`)
-//     });

@@ -68,7 +68,7 @@ export default function RecipeForm(){
                             </Form>
                         )}
                     </Formik>
-                    <Editor onSave={saveTextEditorState}/>
+                    <Editor onSave={saveTextEditorState} editting={false} initData={{}}/>
                 </Card.Body>
             </Card>
         </>

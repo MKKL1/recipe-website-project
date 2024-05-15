@@ -4,11 +4,13 @@ import {Button, Stack} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {environment} from "../../../environment.ts";
+import {useRecipeContext} from "../../contexts/RecipeContext.tsx";
 
 // TODO
 // add loading animation
 // add loading new recipes
 export default function RecipesList(){
+    const {recipe, updateRecipe} = useRecipeContext();
     const [recipes, setRecipes] = useState([]);
     const LIMIT: number = 3;
     let hasNextPage: boolean = false;
@@ -31,6 +33,7 @@ export default function RecipesList(){
 
                 // @ts-ignore
                 setRecipes(docs);
+                updateRecipe(docs[0].id);
 
                 if(paginator.hasNextPage){
                     hasNextPage = true;
@@ -43,7 +46,7 @@ export default function RecipesList(){
     }, []);
 
     function changeCurrentRecipe(id: string){
-        console.log(id);
+        updateRecipe(id);
     }
 
     return (
