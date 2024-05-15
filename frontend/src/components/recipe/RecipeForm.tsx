@@ -21,7 +21,7 @@ export default function RecipeForm(){
     // checking if entered in editing mode
     // if so initialize fields with data
     useEffect(() => {
-        if(!location.state.update){
+        if(!location.state || !location.state.update){
             return;
         }
 
