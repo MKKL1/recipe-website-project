@@ -5,14 +5,16 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {environment} from "../../../environment.ts";
 import {useRecipeContext} from "../../contexts/RecipeContext.tsx";
+import {useNavigate} from "react-router-dom";
 
 // TODO
 // add loading animation
 // add loading new recipes
 export default function RecipesList(){
+    const navigate = useNavigate();
     const {recipe, updateRecipe} = useRecipeContext();
     const [recipes, setRecipes] = useState([]);
-    const LIMIT: number = 3;
+    const LIMIT: number = 5;
     let hasNextPage: boolean = false;
     const [page, setPage] = useState<number>(1);
 
@@ -46,7 +48,9 @@ export default function RecipesList(){
     }, []);
 
     function changeCurrentRecipe(id: string){
-        updateRecipe(id);
+        // updateRecipe(id);
+        // @ts-ignore
+        navigate('/recipe-details', {state: {recipeId: id}});
     }
 
     return (

@@ -7,12 +7,9 @@ export default function Recipes(){
 
     return (
         <RecipeProvider>
-            <Stack direction="horizontal">
-                <Stack>
-                    <h1>Recipes: </h1>
-                    <RecipesList/>
-                </Stack>
-                <RecipeDetails/>
+            <Stack>
+                <h1>Recipes: </h1>
+                <RecipesList/>
             </Stack>
         </RecipeProvider>
     );
