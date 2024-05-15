@@ -10,6 +10,7 @@ import { SerializeInterceptor } from '../interceptors/serialize.interceptor';
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
     SerializeInterceptor,
   ],
+  exports: [CommentsService],
   providers: [CommentsService],
   controllers: [CommentsController],
 })

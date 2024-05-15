@@ -8,6 +8,7 @@ export class RecipePaginationDto {
   // @Type(() => RecipeDto)
   // readonly docs: RecipeDto[];
   // there is no need to return full object with heavy content
+  // yes I told you so
   @Expose()
   @Type(() => RecipeOverviewDto)
   readonly docs: RecipeOverviewDto[];
