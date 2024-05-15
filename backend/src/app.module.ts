@@ -11,7 +11,9 @@ import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/chleb'),
+    // localhost don't work with node version 17 and higher
+    // so I changed it to 127.0.0.1
+    MongooseModule.forRoot('mongodb://127.0.0.1/chleb'),
     RecipeModule,
     UsersModule,
     AuthModule,

@@ -9,6 +9,7 @@ export class RecipeDto {
     examples: ['507f191e810c19729de860ea'],
   })
   _id: string;
+
   @Expose()
   @Transform((value) => value.obj.author_id.toString())
   @ApiProperty({

@@ -1,11 +1,13 @@
 export class RecipeOverview {
     id: string;
-    name: string;
-    content: string;
+    title: string;
+    author_id: string;
+    image_id: string;
 
-    constructor(id: string, name: string, content: string) {
+    constructor(id: string, title: string, author_id: string, image_id: string) {
         this.id = id;
-        this.name = name;
-        this.content = content;
+        this.title = title;
+        this.author_id = author_id;
+        this.image_id = image_id;
     }
 }
