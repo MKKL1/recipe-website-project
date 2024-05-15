@@ -13,6 +13,13 @@ import Profile from "./components/pages/Profile.tsx";
 function App() {
 
     // TODO Add guard for routes based on roles
+    // return author name instead of id in recipes
+    // return recipe with comments
+    // show comments
+    // edit and delete recipe
+    // edit and delete comment
+    // change behavior of RecipeContext
+    // STYLING
 
   return (
     <AuthProvider>

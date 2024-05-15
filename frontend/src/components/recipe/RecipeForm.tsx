@@ -3,12 +3,10 @@ import {environment} from "../../../environment.ts";
 import {Button, Card, Form, FormGroup, FormLabel} from "react-bootstrap";
 import {Formik} from "formik";
 import {useAuthContext} from "../../contexts/AuthContext.tsx";
-import {createReactEditorJS} from "react-editor-js";
 import Editor from "./RecipeEditor.tsx";
 import {useState} from "react";
 import {OutputData} from "@editorjs/editorjs";
 
-// two editors are made and one is broken
 export default function RecipeForm(){
     const {token} = useAuthContext();
     const [data, setData] = useState({});
@@ -20,18 +18,12 @@ export default function RecipeForm(){
         }
     }
 
-    async function onSubmit(values){
-        console.log(values);
-        console.log(token);
-        console.log(data);
-        console.log(file);
-
+    async function onSubmit(values: {title: string}){
         const recipeData = {
           title: values.title,
           content: data
         };
 
-        // can't send formdata to backend -> returns error
         let formData = new FormData();
         // @ts-ignore
         formData.append('image', file);
@@ -63,7 +55,7 @@ export default function RecipeForm(){
                     <Card.Title className="text-center">Add new recipe</Card.Title>
                     <Formik initialValues={{title: '', file: null}}
                         onSubmit={onSubmit}>
-                        {({setFieldValue, handleSubmit, handleChange}) => (
+                        {({handleSubmit, handleChange}) => (
                             <Form onSubmit={handleSubmit} noValidate>
                                 <FormGroup controlId="title" className="mb-3">
                                     <Form.Label>Recipe title</Form.Label>
@@ -76,7 +68,7 @@ export default function RecipeForm(){
                             </Form>
                         )}
                     </Formik>
-                    <Editor onSave={saveTextEditorState}/>
+                    <Editor onSave={saveTextEditorState} editting={false} initData={{}}/>
                 </Card.Body>
             </Card>
         </>
