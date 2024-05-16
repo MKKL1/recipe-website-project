@@ -11,19 +11,27 @@ import {useNavigate} from "react-router-dom";
 // add loading animation
 // add loading new recipes
 export default function RecipesList(){
-    const navigate = useNavigate();
-    const {recipe, updateRecipe} = useRecipeContext();
     const [recipes, setRecipes] = useState([]);
     const LIMIT: number = 5;
-    let hasNextPage: boolean = false;
-    const [pageCount, setPageCount] = useState<number>(1);
+    // let hasNextPage: boolean = false;
+    const [paginator, setPaginator] = useState({
+        page: 1,
+        totalPages: 1,
+        hasPrevPage: false,
+        prevPage: 0,
+        hasNextPage: false,
+        nextPage: 0,
+
+    });
+    // const [pageCount, setPageCount] = useState<number>(1);
     const [page, setPage] = useState<number>(1);
 
     useEffect(() => {
-        setRecipes([]);
-        hasNextPage = false;
-        setPage(1);
+        loadRecipes(page);
+    }, [page]);
 
+    function loadRecipes(page: number) {
+        setRecipes([]);
         axios.get(environment.apiUrl + "recipe", {
             params: {
                 page: page,
@@ -33,42 +41,42 @@ export default function RecipesList(){
             .then(res => {
                 console.log(res.data);
                 const docs = res.data.docs;
-                const paginator = res.data.paginator;
+                setPaginator(res.data.paginator);
 
-                // @ts-ignore
                 setRecipes(docs);
-                updateRecipe(docs[0].id);
-
-
-                if(paginator.hasNextPage){
-                    hasNextPage = true;
-                    setPage(paginator.nextPage);
-                }
-
-                setPageCount(paginator.totalPages);
             })
             .catch(err => {
                 console.error(err);
             });
-    }, []);
+    }
 
-    function changeCurrentRecipe(id: string){
-        // updateRecipe(id);
-        // @ts-ignore
-        navigate('/recipe-details', {state: {recipeId: id}});
+    function handlePageChange(newPage: number) {
+        setPage(newPage);
     }
 
     return (
         <Stack>
+            <div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
             {recipes.map((recipe: RecipeOverview) => (
-                <div key={recipe.id} onClick={() => changeCurrentRecipe(recipe.id)}>
+                <div className="col mb-5">
                     <RecipeElement key={recipe.id} recipe={recipe}/>
                 </div>
             ))}
-            <Pagination>{
-                [...Array(pageCount)].map((e,i) =>
-                <Pagination.Item key={i} active={i+1 === page}>{i+1}</Pagination.Item>)
-            }</Pagination>
+            </div>
+            <Pagination>
+                <Pagination.Prev onClick={() => handlePageChange(paginator.prevPage)} disabled={!paginator.hasPrevPage}/>
+                {
+                    [...Array(paginator.totalPages)].map((_, i) =>
+                        <Pagination.Item
+                            key={i}
+                            active={i + 1 === page}
+                            onClick={() => handlePageChange(i + 1)}
+                        >
+                            {i + 1}
+                        </Pagination.Item>)
+                }
+                <Pagination.Next onClick={() => handlePageChange(paginator.nextPage)} disabled={!paginator.hasNextPage}/>
+            </Pagination>
         </Stack>
     );
 }

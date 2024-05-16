@@ -1,10 +1,12 @@
 import {RecipeOverview} from "../../models/RecipeOverview.ts";
 import {environment} from "../../../environment.ts";
 import {Card} from "react-bootstrap";
+import {useNavigate} from "react-router-dom";
 
 export default function RecipeElement({recipe}: {recipe: RecipeOverview}){
     // image_id is same as id
     // image cant be loaded
+    const navigate = useNavigate();
 
     return (
         // <>
@@ -17,8 +19,8 @@ export default function RecipeElement({recipe}: {recipe: RecipeOverview}){
         //     <p>Id {recipe.id}</p>
         // </>
 
-    <Card style={{ width: '18rem' }}>
-        <Card.Img variant="top" src={environment.apiUrl + "image/" + recipe.image_id} alt={recipe.title}/>
+    <Card className="h-100" onClick={() =>  navigate('/recipe-details', {state: {recipeId: recipe.id}}) }>
+        <Card.Img variant="top" src={environment.apiUrl + "image/" + recipe.image_id} alt={recipe.title} className=" img-responsive full-width"/>
         <Card.Body>
             <Card.Title>{recipe.title}</Card.Title>
 
