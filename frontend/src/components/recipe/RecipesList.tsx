@@ -1,6 +1,6 @@
 import {RecipeOverview} from "../../models/RecipeOverview.ts";
 import RecipeElement from "./RecipeElement.tsx";
-import {Button, Stack} from "react-bootstrap";
+import {Button, Pagination, Stack} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {environment} from "../../../environment.ts";
@@ -16,6 +16,7 @@ export default function RecipesList(){
     const [recipes, setRecipes] = useState([]);
     const LIMIT: number = 5;
     let hasNextPage: boolean = false;
+    const [pageCount, setPageCount] = useState<number>(1);
     const [page, setPage] = useState<number>(1);
 
     useEffect(() => {
@@ -30,6 +31,7 @@ export default function RecipesList(){
             }
         })
             .then(res => {
+                console.log(res.data);
                 const docs = res.data.docs;
                 const paginator = res.data.paginator;
 
@@ -37,10 +39,13 @@ export default function RecipesList(){
                 setRecipes(docs);
                 updateRecipe(docs[0].id);
 
+
                 if(paginator.hasNextPage){
                     hasNextPage = true;
                     setPage(paginator.nextPage);
                 }
+
+                setPageCount(paginator.totalPages);
             })
             .catch(err => {
                 console.error(err);
@@ -60,6 +65,10 @@ export default function RecipesList(){
                     <RecipeElement key={recipe.id} recipe={recipe}/>
                 </div>
             ))}
+            <Pagination>{
+                [...Array(pageCount)].map((e,i) =>
+                <Pagination.Item key={i} active={i+1 === page}>{i+1}</Pagination.Item>)
+            }</Pagination>
         </Stack>
     );
 }
