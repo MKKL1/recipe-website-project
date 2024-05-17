@@ -31,6 +31,7 @@ export default function CommentForm({show, handleClose, recipeId, isEditting, co
                 .then(res => {
                     console.log(res);
                     handleClose(false, res.data);
+                    setMessage("");
                 })
                 .catch(err => {
                     console.log(err);
@@ -42,6 +43,7 @@ export default function CommentForm({show, handleClose, recipeId, isEditting, co
                 .then(res => {
                     // close modal and display new element in comments list
                     handleClose(true, res.data);
+                    setMessage("");
                 })
                 .catch(err => {
                     console.log(err);
@@ -51,7 +53,7 @@ export default function CommentForm({show, handleClose, recipeId, isEditting, co
 
     return (
         <>
-            <Modal show={show} onHide={() => {
+            <Modal show={show} size="lg" onHide={() => {
                     setMessage("");
                     handleClose();
                 }

@@ -55,7 +55,7 @@ export class RecipeController {
     type: RecipeDto,
   })
   async getOneRecipe(@Param('id') id: string) {
-    return this.recipeService.getOneRecipeWithComments(id, 10, {createdAt: 'asc'});
+    return this.recipeService.getOneRecipeWithComments(id, 10, {createdAt: 'desc'});
   }
 
   @Post()

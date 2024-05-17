@@ -17,7 +17,6 @@ export default function Comments({commentsProp, recipeId}){
     }, [commentsProp]);
 
     const handleCloseModal = (added: boolean, comment?: Comment) =>{
-        console.log('test');
         setIsEditting(false);
         setCommentToEdit(null);
         setShowModal(false);
@@ -25,13 +24,8 @@ export default function Comments({commentsProp, recipeId}){
             if(added){
                 setComments([comment, ...comments]);
             } else {
-                // update comment
-                console.log(comment)
-                const editedComments = comments.map(com => {
-                    return comment._id === com._id ? comment : com
-                });
-
-                console.log(editedComments);
+                // update comments
+                const editedComments = comments.map(com => comment._id === com._id ? comment : com);
                 setComments(editedComments);
             }
         }
@@ -50,22 +44,29 @@ export default function Comments({commentsProp, recipeId}){
     }
 
     return (
-        <>
-            <h1>Comments</h1>
-            {
-               isAuth &&
-                <div>
-                    <Button onClick={handleShowModal}>Add comment</Button>
-                    <CommentForm show={showModal} handleClose={handleCloseModal} recipeId={recipeId} isEditting={isEditting} comment={commentToEdit}/>
-                </div>
-            }
-            <Stack>
+        <div className="m-5">
+            <Stack direction="horizontal">
+                <h1>Comments</h1>
                 {
-                    comments.map((comment: Comment) => (
-                        <CommentElement key={comment._id} comment={comment} onDelete={onCommentDelete} onEdit={handleCommentEdit}/>
-                    ))
+                    isAuth &&
+                    <div className="ms-auto">
+                        <Button onClick={handleShowModal}>Add comment</Button>
+                        <CommentForm show={showModal} handleClose={handleCloseModal} recipeId={recipeId} isEditting={isEditting} comment={commentToEdit}/>
+                    </div>
                 }
             </Stack>
-        </>
+            {
+                comments.length === 0 ?
+                    <div></div>
+                    :
+                    <Stack>
+                        {
+                            comments.map((comment: Comment) => (
+                                <CommentElement key={comment._id} comment={comment} onDelete={onCommentDelete} onEdit={handleCommentEdit}/>
+                            ))
+                        }
+                    </Stack>
+            }
+        </div>
     );
 }

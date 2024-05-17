@@ -20,11 +20,10 @@ export default function RecipeDetails(){
     const handleShowConfirm = () => setShowConfirm(true);
 
     useEffect(() => {
-        // check if state has recipeId
-
-        // sort comments
+        // TODO sort comments
         axios.get(environment.apiUrl + "recipe/" + location.state.recipeId)
             .then(res => {
+                console.log("recipe: ");
                 console.log(res);
                 setRecipe(res.data);
             })

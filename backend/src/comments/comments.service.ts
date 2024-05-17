@@ -44,7 +44,7 @@ export class CommentsService {
     if (!(await this.checkPermission(id, user))) {
       throw new UnauthorizedException();
     }
-    return this.commentModel.findOneAndUpdate({ _id: id }, createCommentDto, {new: true}).exec();
+    return this.commentModel.findOneAndUpdate({ _id: id }, {...createCommentDto, edited: true}, {new: true}).exec();
   }
 
   async delete(id: string, user: User) {
