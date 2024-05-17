@@ -104,15 +104,21 @@ export default function RecipeForm(){
                                                   placeholder="Enter recipe title"></Form.Control>
                                 </FormGroup>
                                 <FormGroup>
+                                    <Form.Label>File</Form.Label>
+                                    <br/>
                                     <input id="file" name="file" type="file" onChange={handleFile}/>
                                 </FormGroup>
+
+                                <FormGroup>
+                                    <Form.Label>Content</Form.Label>
+                                    <div id="editorjs" className="editor"></div>
+                                </FormGroup>
+
                                 <Button type="submit">Add Recipe</Button>
                             </Form>
                         )}
                     </Formik>
-                    <div>
-                        <div id="editorjs" className="editor"></div>
-                    </div>
+
                     {/*<Editor onSave={saveTextEditorState} readOnly={false} initData={recipeToEdit.content}/>*/}
                 </Card.Body>
             </Card>
