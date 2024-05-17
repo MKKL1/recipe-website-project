@@ -3,7 +3,7 @@ import {environment} from "../../../environment.ts";
 import {Button, Card, Form, FormGroup, FormLabel} from "react-bootstrap";
 import {Formik} from "formik";
 import {useAuthContext} from "../../contexts/AuthContext.tsx";
-import {default as React, useEffect, useState} from "react";
+import {default as React, useEffect, useRef, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {Recipe} from "../../models/Recipe.ts";
 // @ts-ignore
@@ -22,44 +22,47 @@ export default function RecipeForm(){
     // const [data, setData] = useState({});
     const [file, setFile] = useState(null);
     const [recipeToEdit, setRecipeToEdit] = useState(new Recipe('','','','',[], '', Date.prototype));
-    const [editor, setEditor] = useState<EditorJS>();
+    // const [editor, setEditor] = useState<EditorJS>();
 
+    const ejInstance = useRef<EditorJS>();
 
-    useEffect(() => {
-
-        if(!editor) {
-            setEditor(new EditorJS({
-                holder: 'editorjs',
-                tools: {
-                    header: Header,
-                    list: List,
-                    image: {
-                        class: ImageTool,
-                        config: {
-                            endpoints: {
-                                byFile: environment.apiUrl + "image",
-                                byUrl: environment.apiUrl + "image"
-                            }
+    const initEditor = () => {
+        const editor = new EditorJS({
+            holder: 'editorjs',
+            onReady: () => {
+                ejInstance.current = editor;
+            },
+            autofocus: true,
+            tools: {
+                header: Header,
+                list: List,
+                image: {
+                    class: ImageTool,
+                    config: {
+                        endpoints: {
+                            byFile: environment.apiUrl + "image",
+                            byUrl: environment.apiUrl + "image"
                         }
                     }
-                },
-                onReady: () => {
-                    console.log('Editor.js is ready to work!');
                 }
-            }));
+            },
+        });
+    };
+
+    useEffect(() => {
+        if (ejInstance.current === null) {
+            initEditor();
         }
 
-        if(!location.state || !location.state.update){
-            return;
+        if(location.state && location.state.update) {
+            ejInstance?.current?.render({blocks: location.state.recipe.blocks})
         }
 
-        console.log(location.state.recipe);
-
-        if(editor?.render) {
-            editor.render({blocks: location.state.recipe.blocks});
-        }
-        // don't work because async
-        // setRecipeToEdit(location.state.recipe);
+        return () => {
+            ejInstance?.current?.destroy();
+            // @ts-ignore
+            ejInstance.current = null;
+        };
     }, []);
 
     function handleFile(event: any){
@@ -118,7 +121,7 @@ export default function RecipeForm(){
             <Card style={{margin: '100px'}}>
                 <Card.Body>
                     <Card.Title className="text-center">Add new recipe</Card.Title>
-                    <Formik initialValues={{title: '', file: null}} onSubmit={values => onSubmit(values, editor.save())}>
+                    <Formik initialValues={{title: '', file: null}} onSubmit={values => onSubmit(values, ejInstance?.current?.save())}>
                         {({handleSubmit, handleChange}) => (
                             <Form onSubmit={handleSubmit} noValidate>
                                 <FormGroup controlId="title" className="mb-3">
