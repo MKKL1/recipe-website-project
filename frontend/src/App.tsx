@@ -28,11 +28,10 @@ function App() {
 
     // TODO Add guard for routes based on roles
     // BACKEND NEED TO RETURN MORE INFO
-    // maybe add more instances of editor.js
+    // fix Editor js again
+    // pagination
     // return author name instead of id in recipes
-    // edit and delete recipe
-    // edit and delete comment
-    // change behavior of RecipeContext
+    // edit recipe
     // STYLING
 
   return (
@@ -50,6 +49,7 @@ function App() {
                     <Route path='/profile' Component={Profile}/>
                 </Routes>
             </BrowserRouter>
+            <Notification message={message} variant={variant}/>
         </div>
     </AuthProvider>
   )
