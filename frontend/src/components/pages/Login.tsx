@@ -1,4 +1,4 @@
-import {Alert, Button, Card, Form, FormGroup, Spinner} from "react-bootstrap";
+import {Alert, Button, Card, Container, Form, FormGroup, Spinner} from "react-bootstrap";
 import {LoginRequest} from "../../models/LoginRequest.ts";
 import {Formik} from "formik";
 import * as Yup from 'yup';
@@ -37,36 +37,38 @@ export default function Login(){
 
     return (
         <>
-            <Card className="form-container">
-                <Card.Body>
-                    <Card.Title className="text-center">Sign in</Card.Title>
-                    <Formik initialValues={{username: '', password: ''}}
-                            onSubmit={async (values: LoginRequest): Promise<void> => {submitLogin(values)}}
-                            validationSchema={loginSchema}>
-                        {({errors, isSubmitting, handleSubmit, handleChange}) => (
-                            <Form onSubmit={handleSubmit} noValidate>
-                                <FormGroup controlId="username" className="mb-3">
-                                    <Form.Label>Username</Form.Label>
-                                    <Form.Control type="username" name="username" placeholder="Enter your username" onChange={handleChange}/>
-                                    {errors.username && <Alert style={{marginTop: '10px'}} variant="danger">{errors.username}</Alert>}
-                                </FormGroup>
-                                <FormGroup controlId="password" className="mb-3">
-                                    <Form.Label>Password</Form.Label>
-                                    <Form.Control type="password" name="password" placeholder="Enter your Password" onChange={handleChange}/>
-                                    {errors.password && <Alert style={{marginTop: '10px'}} variant="danger">{errors.password}</Alert>}
-                                </FormGroup>
-                                {/* change button after submitting */}
-                                { !isSubmitting ?
-                                    <Button type="submit">Sign in</Button> :
-                                    <Button variant="primary" disabled>
-                                        <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true"/> Loading...
-                                    </Button>
-                                }
-                            </Form>
-                        )}
-                    </Formik>
-                </Card.Body>
-            </Card>
+            <Container className="d-flex justify-content-center align-items-center" style={{ height: '90vh' }}>
+                <Card style={{ width: '50rem', height: '30rem' }}>
+                    <Card.Body style={{display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                        <Card.Title className="text-center">Sign in</Card.Title>
+                        <Formik initialValues={{username: '', password: ''}}
+                                onSubmit={async (values: LoginRequest): Promise<void> => {submitLogin(values)}}
+                                validationSchema={loginSchema}>
+                            {({errors, touched, isSubmitting, handleSubmit, handleChange, handleBlur}) => (
+                                <Form onSubmit={handleSubmit} noValidate>
+                                    <FormGroup controlId="username" className="mb-3">
+                                        <Form.Label>Username</Form.Label>
+                                        <Form.Control type="username" name="username" placeholder="Enter your username" onChange={handleChange} onBlur={handleBlur}/>
+                                        {touched.username && errors.username && <Alert style={{marginTop: '10px'}} variant="danger">{errors.username}</Alert>}
+                                    </FormGroup>
+                                    <FormGroup controlId="password" className="mb-3">
+                                        <Form.Label>Password</Form.Label>
+                                        <Form.Control type="password" name="password" placeholder="Enter your Password" onChange={handleChange} onBlur={handleBlur}/>
+                                        {touched.password && errors.password && <Alert style={{marginTop: '10px'}} variant="danger">{errors.password}</Alert>}
+                                    </FormGroup>
+                                    {/* change button after submitting */}
+                                    { !isSubmitting ?
+                                        <Button type="submit">Sign in</Button> :
+                                        <Button variant="primary" disabled>
+                                            <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true"/> Loading...
+                                        </Button>
+                                    }
+                                </Form>
+                            )}
+                        </Formik>
+                    </Card.Body>
+                </Card>
+            </Container>
         </>
     );
 }

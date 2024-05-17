@@ -10,10 +10,13 @@ import {AuthProvider, useAuthContext} from './contexts/AuthContext.tsx';
 import Profile from "./components/pages/Profile.tsx";
 import RecipeDetails from "./components/recipe/RecipeDetails.tsx";
 import {useEffect} from "react";
+import Notification from "./components/Notification.tsx";
+import {useNotificationContext} from "./contexts/NotificationContext.tsx";
 
 
 function App() {
     const {updateToken} = useAuthContext();
+    const {message, variant} = useNotificationContext();
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -46,6 +49,7 @@ function App() {
                 <Route path='/profile' Component={Profile}/>
             </Routes>
         </BrowserRouter>
+        <Notification message={message} variant={variant}/>
     </div>
   )
 }
