@@ -55,34 +55,37 @@ export default function RecipesList(){
 
     return (
         <Stack>
-            recipes.length === 0 ?
+            { recipes.length === 0 ?
             <div>
                 <h1>No recipes found!</h1>
             </div>
             :
-            <div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            {recipes.map((recipe: RecipeOverview) => (
-                <div className="col mb-5">
-                    <RecipeElement key={recipe.id} recipe={recipe}/>
+            <div>
+                <div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                {recipes.map((recipe: RecipeOverview) => (
+                    <div className="col mb-5">
+                        <RecipeElement key={recipe.id} recipe={recipe}/>
+                    </div>
+                ))}
                 </div>
-            ))}
+                <div className="d-flex justify-content-center mt-4">
+                    <Pagination>
+                        <Pagination.Prev onClick={() => handlePageChange(paginator.prevPage)} disabled={!paginator.hasPrevPage}/>
+                        {
+                            [...Array(paginator.totalPages)].map((_, i) =>
+                                <Pagination.Item
+                                    key={i}
+                                    active={i + 1 === page}
+                                    onClick={() => handlePageChange(i + 1)}
+                                >
+                                    {i + 1}
+                                </Pagination.Item>)
+                        }
+                        <Pagination.Next onClick={() => handlePageChange(paginator.nextPage)} disabled={!paginator.hasNextPage}/>
+                    </Pagination>
+                </div>
             </div>
-            <div className="d-flex justify-content-center mt-4">
-                <Pagination>
-                    <Pagination.Prev onClick={() => handlePageChange(paginator.prevPage)} disabled={!paginator.hasPrevPage}/>
-                    {
-                        [...Array(paginator.totalPages)].map((_, i) =>
-                            <Pagination.Item
-                                key={i}
-                                active={i + 1 === page}
-                                onClick={() => handlePageChange(i + 1)}
-                            >
-                                {i + 1}
-                            </Pagination.Item>)
-                    }
-                    <Pagination.Next onClick={() => handlePageChange(paginator.nextPage)} disabled={!paginator.hasNextPage}/>
-                </Pagination>
-            </div>
+        }
         </Stack>
     );
 }
