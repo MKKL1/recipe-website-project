@@ -22,28 +22,32 @@ export default function RecipeForm(){
     // const [data, setData] = useState({});
     const [file, setFile] = useState(null);
     const [recipeToEdit, setRecipeToEdit] = useState(new Recipe('','','','',[], '', Date.prototype));
-    const [editor, setEditor] = useState<EditorJS>(new EditorJS({
-        holder: 'editorjs',
-        tools: {
-            header: Header,
-            list: List,
-            image: {
-                class: ImageTool,
-                config: {
-                    endpoints: {
-                        byFile: environment.apiUrl + "image",
-                        byUrl: environment.apiUrl + "image"
-                    }
-                }
-            }
-        },
-        onReady: () => {
-            console.log('Editor.js is ready to work!');
-        }
-    }));
-    // checking if entered in editing mode
-    // if so initialize fields with data
+    const [editor, setEditor] = useState<EditorJS>();
+
+
     useEffect(() => {
+
+        if(!editor) {
+            setEditor(new EditorJS({
+                holder: 'editorjs',
+                tools: {
+                    header: Header,
+                    list: List,
+                    image: {
+                        class: ImageTool,
+                        config: {
+                            endpoints: {
+                                byFile: environment.apiUrl + "image",
+                                byUrl: environment.apiUrl + "image"
+                            }
+                        }
+                    }
+                },
+                onReady: () => {
+                    console.log('Editor.js is ready to work!');
+                }
+            }));
+        }
 
         if(!location.state || !location.state.update){
             return;
@@ -51,7 +55,7 @@ export default function RecipeForm(){
 
         console.log(location.state.recipe);
 
-        if(editor.render) {
+        if(editor?.render) {
             editor.render({blocks: location.state.recipe.blocks});
         }
         // don't work because async
@@ -65,13 +69,15 @@ export default function RecipeForm(){
     }
 
     async function onSubmit(values: any, data: Promise<OutputData>){
-        // add error in ui
-        if(Object.keys(data).length === 0){
+        //TODO add error in ui
+        const adata = await data;
+        console.log(adata);
+        if(adata.blocks.length === 0){
             console.error("Empty content");
             return;
         }
 
-        // add error in ui
+        //TODO add error in ui
         if(file === null){
             console.error("Empty image");
             return;
@@ -84,7 +90,7 @@ export default function RecipeForm(){
         const recipeData = {
           title: values.title,
           category: values.category,
-          content: await data
+          content: adata
         };
 
         let formData = new FormData();
