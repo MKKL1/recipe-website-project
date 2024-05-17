@@ -24,10 +24,9 @@ function App() {
     }, []);
 
     // TODO Add guard for routes based on roles
+    // BACKEND NEED TO RETURN MORE INFO
     // maybe add more instances of editor.js
     // return author name instead of id in recipes
-    // return recipe with comments
-    // show comments
     // edit and delete recipe
     // edit and delete comment
     // change behavior of RecipeContext

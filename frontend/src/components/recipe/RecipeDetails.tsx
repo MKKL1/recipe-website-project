@@ -22,6 +22,7 @@ export default function RecipeDetails(){
     useEffect(() => {
         // check if state has recipeId
 
+        // sort comments
         axios.get(environment.apiUrl + "recipe/" + location.state.recipeId)
             .then(res => {
                 console.log(res);
