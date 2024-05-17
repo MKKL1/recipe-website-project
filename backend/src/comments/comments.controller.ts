@@ -87,7 +87,7 @@ export class CommentsController {
     @Param('recipeId') recipeId: string,
     @Body() createCommentDto: CreateCommentDto,
   ) {
-    await this.commentsService.create(createCommentDto, user, recipeId);
+    return await this.commentsService.create(createCommentDto, user, recipeId);
   }
 
   @Put(':commentId')
@@ -112,7 +112,7 @@ export class CommentsController {
     @Param('commentId') commentId: string,
     @Body() createCommentDto: CreateCommentDto,
   ) {
-    await this.commentsService.update(commentId, createCommentDto, user);
+    return await this.commentsService.update(commentId, createCommentDto, user);
   }
 
   @Delete(':commentId')

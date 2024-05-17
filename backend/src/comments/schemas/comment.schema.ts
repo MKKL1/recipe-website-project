@@ -17,6 +17,9 @@ export class Comment {
 
   @Prop({ required: true })
   content: string;
+
+  @Prop({default: false})
+  edited: boolean;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

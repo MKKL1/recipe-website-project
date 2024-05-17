@@ -24,10 +24,10 @@ export default function RecipeDetails(){
     const handleCloseConfirm = () => setShowConfirm(false);
     const handleShowConfirm = () => setShowConfirm(true);
 
-
     useEffect(() => {
         axios.get(`${environment.apiUrl}recipe/${id}`) // Use environment variables for API URL
             .then(res => {
+                console.log("recipe: ");
                 console.log(res);
                 setRecipe(res.data);
                 console.log(res.data);

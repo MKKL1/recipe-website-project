@@ -10,10 +10,13 @@ import {AuthProvider, useAuthContext} from './contexts/AuthContext.tsx';
 import Profile from "./components/pages/Profile.tsx";
 import RecipeDetails from "./components/recipe/RecipeDetails.tsx";
 import {useEffect} from "react";
+import Notification from "./components/Notification.tsx";
+import {useNotificationContext} from "./contexts/NotificationContext.tsx";
 
 
 function App() {
     const {updateToken} = useAuthContext();
+    const {message, variant} = useNotificationContext();
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -24,10 +27,9 @@ function App() {
     }, []);
 
     // TODO Add guard for routes based on roles
+    // BACKEND NEED TO RETURN MORE INFO
     // maybe add more instances of editor.js
     // return author name instead of id in recipes
-    // return recipe with comments
-    // show comments
     // edit and delete recipe
     // edit and delete comment
     // change behavior of RecipeContext

@@ -34,5 +34,5 @@ export class RecipeDto {
 
   @Expose()
   @Type(() => CommentDto)
-  comments: CommentDto[];
+  comments: any[];
 }
