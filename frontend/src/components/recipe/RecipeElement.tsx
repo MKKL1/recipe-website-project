@@ -2,6 +2,7 @@ import {RecipeOverview} from "../../models/RecipeOverview.ts";
 import {environment} from "../../../environment.ts";
 import {Card} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
+import '../../styles/style.scss'
 
 export default function RecipeElement({recipe}: {recipe: RecipeOverview}){
     // image_id is same as id
@@ -19,16 +20,22 @@ export default function RecipeElement({recipe}: {recipe: RecipeOverview}){
         //     <p>Id {recipe.id}</p>
         // </>
 
-    <Card className="h-100" onClick={() =>  navigate(`/recipe-details/${recipe.id}`) }>
-        <Card.Img variant="top" src={environment.apiUrl + "image/" + recipe.image_id} alt={recipe.title} className=" img-responsive full-width"/>
-        <Card.Body>
-            <Card.Title>{recipe.title}</Card.Title>
+        <Card className="h-100 recipe-element" onClick={() => navigate(`/recipe-details/${recipe.id}`)}>
+            <div className="thumbnail">
+                <div className="image">
+                    <Card.Img variant="top" src={environment.apiUrl + "image/" + recipe.image_id} alt={recipe.title}
+                              className=" img-responsive full-width"/>
+                </div>
+            </div>
 
-            <Card.Text>
-                {recipe.description}
-            </Card.Text>
-            {/*<Button variant="primary">Go somewhere</Button>*/}
-        </Card.Body>
-    </Card>
-    );
+            <Card.Body>
+                <Card.Title>{recipe.title}</Card.Title>
+
+                <Card.Text>
+                    {recipe.description}
+                </Card.Text>
+                {/*<Button variant="primary">Go somewhere</Button>*/}
+            </Card.Body>
+        </Card>
+);
 }

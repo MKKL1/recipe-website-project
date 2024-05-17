@@ -1,7 +1,6 @@
 import {Recipe} from "../../models/Recipe.ts";
 import {Button, Container, Image, Modal, Row, Stack} from "react-bootstrap";
 import {useAuthContext} from "../../contexts/AuthContext.tsx";
-import Editor from "./RecipeEditor.tsx";
 import Comments from "../comment/Comments.tsx";
 import {environment} from "../../../environment.ts";
 import {useLocation, useNavigate, useParams} from "react-router-dom";

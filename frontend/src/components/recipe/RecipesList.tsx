@@ -12,7 +12,7 @@ import {useNavigate} from "react-router-dom";
 // add loading new recipes
 export default function RecipesList(){
     const [recipes, setRecipes] = useState([]);
-    const LIMIT: number = 5;
+    const LIMIT: number = 10;
     // let hasNextPage: boolean = false;
     const [paginator, setPaginator] = useState({
         page: 1,
@@ -63,20 +63,22 @@ export default function RecipesList(){
                 </div>
             ))}
             </div>
-            <Pagination>
-                <Pagination.Prev onClick={() => handlePageChange(paginator.prevPage)} disabled={!paginator.hasPrevPage}/>
-                {
-                    [...Array(paginator.totalPages)].map((_, i) =>
-                        <Pagination.Item
-                            key={i}
-                            active={i + 1 === page}
-                            onClick={() => handlePageChange(i + 1)}
-                        >
-                            {i + 1}
-                        </Pagination.Item>)
-                }
-                <Pagination.Next onClick={() => handlePageChange(paginator.nextPage)} disabled={!paginator.hasNextPage}/>
-            </Pagination>
+            <div className="d-flex justify-content-center mt-4">
+                <Pagination>
+                    <Pagination.Prev onClick={() => handlePageChange(paginator.prevPage)} disabled={!paginator.hasPrevPage}/>
+                    {
+                        [...Array(paginator.totalPages)].map((_, i) =>
+                            <Pagination.Item
+                                key={i}
+                                active={i + 1 === page}
+                                onClick={() => handlePageChange(i + 1)}
+                            >
+                                {i + 1}
+                            </Pagination.Item>)
+                    }
+                    <Pagination.Next onClick={() => handlePageChange(paginator.nextPage)} disabled={!paginator.hasNextPage}/>
+                </Pagination>
+            </div>
         </Stack>
     );
 }

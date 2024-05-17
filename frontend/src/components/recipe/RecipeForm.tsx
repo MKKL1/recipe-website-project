@@ -3,31 +3,59 @@ import {environment} from "../../../environment.ts";
 import {Button, Card, Form, FormGroup, FormLabel} from "react-bootstrap";
 import {Formik} from "formik";
 import {useAuthContext} from "../../contexts/AuthContext.tsx";
-import Editor from "./RecipeEditor.tsx";
-import {useEffect, useState} from "react";
-import {OutputData} from "@editorjs/editorjs";
+import {default as React, useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {Recipe} from "../../models/Recipe.ts";
+// @ts-ignore
+import Header from '@editorjs/header';
+// @ts-ignore
+import List from '@editorjs/list';
+// @ts-ignore
+import ImageTool from '@editorjs/image';
+import EditorJS, {EditorConfig, OutputData} from "@editorjs/editorjs";
 
 // TODO validate input
 export default function RecipeForm(){
     const navigate = useNavigate();
     const location = useLocation();
     const {token} = useAuthContext();
-    const [data, setData] = useState({});
+    // const [data, setData] = useState({});
     const [file, setFile] = useState(null);
-    const [recipeToEdit, setRecipeToEdit] = useState(new Recipe('','','',[],''));
-
+    const [recipeToEdit, setRecipeToEdit] = useState(new Recipe('','','',[],'', Date.prototype));
+    const [editor, setEditor] = useState<EditorJS>(new EditorJS({
+        holder: 'editorjs',
+        tools: {
+            header: Header,
+            list: List,
+            image: {
+                class: ImageTool,
+                config: {
+                    endpoints: {
+                        byFile: environment.apiUrl + "image",
+                        byUrl: environment.apiUrl + "image"
+                    }
+                }
+            }
+        },
+        onReady: () => {
+            console.log('Editor.js is ready to work!');
+        }
+    }));
     // checking if entered in editing mode
     // if so initialize fields with data
     useEffect(() => {
+
         if(!location.state || !location.state.update){
             return;
         }
 
         console.log(location.state.recipe);
+
+        if(editor.render) {
+            editor.render({blocks: location.state.recipe.blocks});
+        }
         // don't work because async
-        setRecipeToEdit(location.state.recipe);
+        // setRecipeToEdit(location.state.recipe);
     }, []);
 
     function handleFile(event: any){
@@ -36,10 +64,10 @@ export default function RecipeForm(){
         }
     }
 
-    async function onSubmit(values: {title: string}){
+    async function onSubmit(values: {title: string}, data: Promise<OutputData>){
         const recipeData = {
           title: values.title,
-          content: data
+          content: await data
         };
 
         let formData = new FormData();
@@ -55,15 +83,11 @@ export default function RecipeForm(){
                 "Content-Type": "multipart/form-data"
             }})
             .then(res => {
-                navigate('/recipe-details', {state: {recipeId: res.data._id}});
+                navigate(`/recipe-details/${res.data._id}`);
             })
             .catch(err => {
                 console.error(err);
             });
-    }
-
-    function saveTextEditorState(outputData: OutputData){
-        setData(outputData);
     }
 
     return (
@@ -71,13 +95,13 @@ export default function RecipeForm(){
             <Card style={{margin: '100px'}}>
                 <Card.Body>
                     <Card.Title className="text-center">Add new recipe</Card.Title>
-                    <Formik initialValues={{title: '', file: null}}
-                        onSubmit={onSubmit}>
+                    <Formik initialValues={{title: '', file: null}} onSubmit={values => onSubmit(values, editor.save())}>
                         {({handleSubmit, handleChange}) => (
                             <Form onSubmit={handleSubmit} noValidate>
                                 <FormGroup controlId="title" className="mb-3">
                                     <Form.Label>Recipe title</Form.Label>
-                                    <Form.Control type="text" name="title" onChange={handleChange} placeholder="Enter recipe title"></Form.Control>
+                                    <Form.Control type="text" name="title" onChange={handleChange}
+                                                  placeholder="Enter recipe title"></Form.Control>
                                 </FormGroup>
                                 <FormGroup>
                                     <input id="file" name="file" type="file" onChange={handleFile}/>
@@ -86,7 +110,10 @@ export default function RecipeForm(){
                             </Form>
                         )}
                     </Formik>
-                    <Editor onSave={saveTextEditorState} readOnly={false} initData={recipeToEdit.content}/>
+                    <div>
+                        <div id="editorjs" className="editor"></div>
+                    </div>
+                    {/*<Editor onSave={saveTextEditorState} readOnly={false} initData={recipeToEdit.content}/>*/}
                 </Card.Body>
             </Card>
         </>
