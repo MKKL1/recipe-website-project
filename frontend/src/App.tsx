@@ -36,21 +36,22 @@ function App() {
     // STYLING
 
   return (
-    <div>
-        <BrowserRouter>
-            <NavigationBar/>
-            <Routes>
-                <Route path='/' Component={Home}/>
-                <Route path='/login' Component={Login}/>
-                <Route path='/register' Component={Register}/>
-                <Route path='/add' Component={RecipeForm}/>
-                <Route path='/recipes' Component={Recipes}/>
-                <Route path='/recipe-details' Component={RecipeDetails}/>
-                <Route path='/profile' Component={Profile}/>
-            </Routes>
-        </BrowserRouter>
-        <Notification message={message} variant={variant}/>
-    </div>
+    <AuthProvider>
+        <div>
+            <BrowserRouter>
+                <NavigationBar/>
+                <Routes>
+                    <Route path='/' Component={Home}/>
+                    <Route path='/login' Component={Login}/>
+                    <Route path='/register' Component={Register}/>
+                    <Route path='/add' Component={RecipeForm}/>
+                    <Route path='/recipes' Component={Recipes}/>
+                    <Route path='/recipe-details/:id' Component={RecipeDetails}/>
+                    <Route path='/profile' Component={Profile}/>
+                </Routes>
+            </BrowserRouter>
+        </div>
+    </AuthProvider>
   )
 }
 

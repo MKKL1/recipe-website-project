@@ -18,12 +18,15 @@
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "bootstrap-sass": "^3.4.3",
+    "editorjs-html": "^3.4.3",
     "formik": "^2.4.6",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
     "react-dom": "^18.3.1",
     "react-editor-js": "^2.1.0",
     "react-router-dom": "^6.23.1",
+    "sass": "^1.77.2",
     "yup": "^1.4.0"
   },
   "devDependencies": {
