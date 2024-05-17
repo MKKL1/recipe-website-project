@@ -13,15 +13,18 @@ export default function RecipeDetails(){
     const location = useLocation();
     const {user, isAuth, token} = useAuthContext();
 
-    const [recipe, setRecipe] = useState(new Recipe('','','',[],''));
+    const [recipe, setRecipe] = useState(new Recipe('','','','',[],''));
     const [showConfirm, setShowConfirm] = useState(false);
 
     const handleCloseConfirm = () => setShowConfirm(false);
     const handleShowConfirm = () => setShowConfirm(true);
 
     useEffect(() => {
+        // check if state has recipeId
+
         axios.get(environment.apiUrl + "recipe/" + location.state.recipeId)
             .then(res => {
+                console.log(res);
                 setRecipe(res.data);
             })
             .catch(err => {
@@ -69,14 +72,12 @@ export default function RecipeDetails(){
                 }
             </span>
             {/* Include basic info - lacking id for some reason */}
-            <p> title {recipe.title}</p>
-            <p> id {recipe._id}</p>
-            <p>image {recipe.image_id}</p>
+            <h1>{recipe.title}</h1>
             <p> author {recipe.author_id}</p>
             {/* Display content */}
             <Editor onSave={() => {}} initData={recipe.content} readOnly={true}/>
             {/*  Comments section  */}
-            <Comments/>
+            <Comments commentsProp={recipe.comments} recipeId={recipe._id}/>
             {/* Modal for delete confirmation*/}
             <Modal show={showConfirm} onHide={handleCloseConfirm} animation={false}>
                 <Modal.Header closeButton>

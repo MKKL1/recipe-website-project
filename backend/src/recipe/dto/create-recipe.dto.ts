@@ -43,4 +43,6 @@ export class CreateRecipeDto {
   // @IsOptional()
   // @IsString()
   readonly content: string;
+
+  readonly category: string;
 }

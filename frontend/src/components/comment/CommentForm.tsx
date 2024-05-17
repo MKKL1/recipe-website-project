@@ -2,22 +2,21 @@ import {Button, Form, Modal} from "react-bootstrap";
 import {useState} from "react";
 import axios from "axios";
 import {environment} from "../../../environment.ts";
-import {useRecipeContext} from "../../contexts/RecipeContext.tsx";
 import {useAuthContext} from "../../contexts/AuthContext.tsx";
 
-export default function CommentForm({show, handleClose}){
+export default function CommentForm({show, handleClose, recipeId}){
     const [message, setMessage] = useState('');
-    const {recipe} = useRecipeContext();
     const {token} = useAuthContext();
 
     async function addComment(e: any){
         e.preventDefault();
 
+        // handle error in gui
         if(message.length < 3){
-            return
+            return;
         }
 
-        axios.post(environment.apiUrl + "recipe/" + recipe._id + "/comments",
+        axios.post(environment.apiUrl + "recipe/" + recipeId + "/comments",
             {content: message},
             {headers: { Authorization: `Bearer ${token}`}})
             .then(res => {

@@ -4,7 +4,6 @@ import {Button, Pagination, Stack} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {environment} from "../../../environment.ts";
-import {useRecipeContext} from "../../contexts/RecipeContext.tsx";
 import {useNavigate} from "react-router-dom";
 
 // TODO
@@ -12,7 +11,6 @@ import {useNavigate} from "react-router-dom";
 // add loading new recipes
 export default function RecipesList(){
     const navigate = useNavigate();
-    const {recipe, updateRecipe} = useRecipeContext();
     const [recipes, setRecipes] = useState([]);
     const LIMIT: number = 5;
     let hasNextPage: boolean = false;
@@ -37,7 +35,6 @@ export default function RecipesList(){
 
                 // @ts-ignore
                 setRecipes(docs);
-                updateRecipe(docs[0].id);
 
 
                 if(paginator.hasNextPage){
@@ -53,22 +50,30 @@ export default function RecipesList(){
     }, []);
 
     function changeCurrentRecipe(id: string){
-        // updateRecipe(id);
         // @ts-ignore
         navigate('/recipe-details', {state: {recipeId: id}});
     }
 
     return (
         <Stack>
-            {recipes.map((recipe: RecipeOverview) => (
-                <div key={recipe.id} onClick={() => changeCurrentRecipe(recipe.id)}>
-                    <RecipeElement key={recipe.id} recipe={recipe}/>
-                </div>
-            ))}
-            <Pagination>{
-                [...Array(pageCount)].map((e,i) =>
-                <Pagination.Item key={i} active={i+1 === page}>{i+1}</Pagination.Item>)
-            }</Pagination>
+            {
+                recipes.length === 0 ?
+                    <div>
+                        <h1>No recipes found!</h1>
+                    </div>
+                    :
+                    <div>
+                        {recipes.map((recipe: RecipeOverview) => (
+                            <div key={recipe.id} onClick={() => changeCurrentRecipe(recipe.id)}>
+                                <RecipeElement key={recipe.id} recipe={recipe}/>
+                            </div>
+                        ))}
+                        <Pagination>{
+                            [...Array(pageCount)].map((e,i) =>
+                                <Pagination.Item key={i} active={i+1 === page}>{i+1}</Pagination.Item>)
+                        }</Pagination>
+                    </div>
+            }
         </Stack>
     );
 }

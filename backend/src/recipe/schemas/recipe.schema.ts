@@ -19,6 +19,10 @@ export class Recipe {
   @Prop({ required: false })
   description: string;
 
+  // temporary values in enum
+  @Prop({type: String, enum: ['chleb', 'bulka', 'bagieta']})
+  category: string;
+
   @Prop()
   content: S.Types.Mixed;
 

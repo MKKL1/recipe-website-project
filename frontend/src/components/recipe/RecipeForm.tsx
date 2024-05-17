@@ -18,6 +18,7 @@ export default function RecipeForm(){
     const [file, setFile] = useState(null);
     const [recipeToEdit, setRecipeToEdit] = useState(new Recipe('','','',[],''));
 
+    // FOR EDITTING MODE
     // checking if entered in editing mode
     // if so initialize fields with data
     useEffect(() => {
@@ -36,10 +37,28 @@ export default function RecipeForm(){
         }
     }
 
-    async function onSubmit(values: {title: string}){
+    async function onSubmit(values: any){
+        // add error in ui
+        if(Object.keys(data).length === 0){
+            console.error("Empty content");
+            return;
+        }
+
+        // add error in ui
+        if(file === null){
+            console.error("Empty image");
+            return;
+        }
+
+        if(values.title == "" || values.category == ""){
+            console.error("Wrong title or cateogry");
+            return;
+        }
+
         const recipeData = {
-          title: values.title,
-          content: data
+            title: values.title,
+            category: values.category,
+            content: data
         };
 
         let formData = new FormData();
@@ -78,6 +97,14 @@ export default function RecipeForm(){
                                 <FormGroup controlId="title" className="mb-3">
                                     <Form.Label>Recipe title</Form.Label>
                                     <Form.Control type="text" name="title" onChange={handleChange} placeholder="Enter recipe title"></Form.Control>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Form.Select aria-label="Default select example" name="category" onChange={handleChange}>
+                                        <option>Select category</option>
+                                        <option value="chleb">Chleb</option>
+                                        <option value="bulka">Bułka</option>
+                                        <option value="bagieta">Bagieta</option>
+                                    </Form.Select>
                                 </FormGroup>
                                 <FormGroup>
                                     <input id="file" name="file" type="file" onChange={handleFile}/>

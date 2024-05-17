@@ -37,12 +37,15 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({ children }
             decodedPayload.email,
             decodedPayload.roles
         ));
+
+        localStorage.setItem("token", accessToken);
     };
 
     const resetToken = () => {
         setIsAuth(false);
         setToken("");
         setUser(new User("","","",[]));
+        localStorage.setItem('token', '');
     }
 
     return (
