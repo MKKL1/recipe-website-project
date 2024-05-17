@@ -4,29 +4,40 @@ import {useAuthContext} from "../../contexts/AuthContext.tsx";
 import Editor from "./RecipeEditor.tsx";
 import Comments from "../comment/Comments.tsx";
 import {environment} from "../../../environment.ts";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import RecipeContent from "./RecipeContent.tsx";
 
 export default function RecipeDetails(){
+    let {id} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const {user, isAuth, token} = useAuthContext();
 
     const [recipe, setRecipe] = useState(new Recipe('','','',[],''));
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     const [showConfirm, setShowConfirm] = useState(false);
 
     const handleCloseConfirm = () => setShowConfirm(false);
     const handleShowConfirm = () => setShowConfirm(true);
 
+
     useEffect(() => {
-        axios.get(environment.apiUrl + "recipe/" + location.state.recipeId)
+        axios.get(`${environment.apiUrl}recipe/${id}`) // Use environment variables for API URL
             .then(res => {
                 setRecipe(res.data);
+                console.log(res.data);
             })
             .catch(err => {
+                setError(err);
                 console.error(err);
             })
+            .finally(() => {
+                setLoading(false);
+            });
     }, []);
 
     function onEdit(){
@@ -54,6 +65,10 @@ export default function RecipeDetails(){
             })
     }
 
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+    if (!recipe) return <div>No recipe found</div>;
+
     return (
         <Stack>
             <span>
@@ -74,7 +89,8 @@ export default function RecipeDetails(){
             <p>image {recipe.image_id}</p>
             <p> author {recipe.author_id}</p>
             {/* Display content */}
-            <Editor onSave={() => {}} initData={recipe.content} readOnly={true}/>
+            {/*<Editor onSave={() => {}} initData={recipe.content} readOnly={true}/>*/}
+            <RecipeContent data={recipe.content}/>
             {/*  Comments section  */}
             <Comments/>
             {/* Modal for delete confirmation*/}

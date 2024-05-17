@@ -33,7 +33,7 @@ function App() {
                     <Route path='/register' Component={Register}/>
                     <Route path='/add' Component={RecipeForm}/>
                     <Route path='/recipes' Component={Recipes}/>
-                    <Route path='/recipe-details' Component={RecipeDetails}/>
+                    <Route path='/recipe-details/:id' Component={RecipeDetails}/>
                     <Route path='/profile' Component={Profile}/>
                 </Routes>
             </BrowserRouter>

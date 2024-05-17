@@ -19,7 +19,7 @@ export default function RecipeElement({recipe}: {recipe: RecipeOverview}){
         //     <p>Id {recipe.id}</p>
         // </>
 
-    <Card className="h-100" onClick={() =>  navigate('/recipe-details', {state: {recipeId: recipe.id}}) }>
+    <Card className="h-100" onClick={() =>  navigate(`/recipe-details/${recipe.id}`) }>
         <Card.Img variant="top" src={environment.apiUrl + "image/" + recipe.image_id} alt={recipe.title} className=" img-responsive full-width"/>
         <Card.Body>
             <Card.Title>{recipe.title}</Card.Title>
