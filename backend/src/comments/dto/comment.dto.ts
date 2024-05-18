@@ -8,9 +8,9 @@ export class CommentDto {
   @Transform((value) => value.obj._id.toString())
   _id: string;
 
-  @Expose()
+  @Expose({ name: "user_id" })
   @Type(() => UserOverviewDto)
-  user_id: UserOverviewDto;
+  author: UserOverviewDto;
 
   @Expose()
   content: string;
