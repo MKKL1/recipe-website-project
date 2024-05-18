@@ -58,7 +58,10 @@ export default function CommentForm({show, handleClose, recipeId, isEditting, co
 
     return (
         <>
-            <Modal show={show} size="lg" onHide={() => {
+            <Modal show={show} size="lg"
+                   aria-labelledby="contained-modal-title-vcenter"
+                   centered
+                   onHide={() => {
                     setMessage("");
                     handleClose();
                 }

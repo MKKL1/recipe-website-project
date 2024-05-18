@@ -17,12 +17,11 @@ export default function RecipeElement({recipe}: {recipe: RecipeOverview}){
                 </div>
             </div>
 
+            {/* add more info*/}
             <Card.Body>
                 <Card.Title>{recipe.title}</Card.Title>
-
-                <Card.Text>
-                    {recipe.description}
-                </Card.Text>
+                {/* description doesn't exist*/}
+                <Card.Text>{recipe.description}</Card.Text>
             </Card.Body>
         </Card>
 );

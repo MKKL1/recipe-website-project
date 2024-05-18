@@ -10,6 +10,7 @@ import RecipeContent from "./RecipeContent.tsx";
 import '../../styles/style.scss'
 import {useNotificationContext} from "../../contexts/NotificationContext.tsx";
 import {Variant} from "../../models/Variant.ts";
+import "../../styles/recipes.css";
 
 export default function RecipeDetails(){
     let {id} = useParams();
@@ -77,21 +78,23 @@ export default function RecipeDetails(){
     if (!recipe) return <div>No recipe found</div>;
 
     return (
-        <Container className="px-4 px-lg-5 my-5 w-50">
+        <Container className="px-4 px-lg-5 my-5">
             <Row>
                 <Image src={environment.apiUrl + "image/" + recipe.image_id} className="img-fluid"/>
             </Row>
-
             <Row>
-                <div className="col-12 col-md-8">
+                <Stack direction="horizontal" className="col-12 col-md-8 w-100 justify-content-between">
                     <div className="recipe-headline my-5">
                         {/*<span>{recipe.updatedAt.toDateString()}</span>*/}
-                        <h2>{recipe.title}</h2>
+                        <h2 className="p-0 m-0">{recipe.title}</h2>
                     </div>
                     {   isAuth && user.roles.includes("admin") && user.id === recipe.author_id &&
-                        <Button onClick={handleShowConfirm} variant="danger">Delete recipe</Button>
+                        <div className="my-5">
+                            <Button onClick={onEdit} className="mx-2">Edit</Button>
+                            <Button onClick={handleShowConfirm} variant="danger">Delete</Button>
+                        </div>
                     }
-                </div>
+                </Stack>
             </Row>
             <div>
                 {/* Display content */}
@@ -99,23 +102,26 @@ export default function RecipeDetails(){
                 {/*  Comments section  */}
                 <Comments commentsProp={recipe.comments} recipeId={recipe._id}/>
                 {/* Modal for delete confirmation*/}
-                <Modal show={showConfirm} onHide={handleCloseConfirm} animation={false}>
+                <Modal show={showConfirm}
+                       aria-labelledby="contained-modal-title-vcenter"
+                       centered
+                       onHide={handleCloseConfirm}>
                     <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <h1>Are you sure you want to delete this recipe?</h1>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={handleCloseConfirm}>
-                                Close
-                            </Button>
-                            <Button variant="danger" onClick={onDelete}>
-                                Delete recipe
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-                </div>
+                        <Modal.Title>Deleting recipe</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <h4>Are you sure you want to delete this recipe?</h4>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleCloseConfirm}>
+                            Close
+                        </Button>
+                        <Button variant="danger" onClick={onDelete}>
+                            Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
         </Container>
     );
 }

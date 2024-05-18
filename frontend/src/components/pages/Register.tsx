@@ -30,7 +30,7 @@ export default function Register(){
             .required("Password confirm is required")
     });
 
-    function submitRegistration(values: RegistrationRequest){
+    function submitRegistration(values: RegistrationRequest, setSubmitting: (isSubmitting: boolean) => void){
         console.log(values);
 
         // TODO Show toast with info
@@ -42,11 +42,13 @@ export default function Register(){
         .then(res => {
             const accessToken = res.data.access_token;
             updateToken(accessToken);
+            setSubmitting(false);
             pushNotification("Succesfully created account!", Variant.success);
             navigate('/recipes');
         })
         .catch(err => {
             console.error(err);
+            setSubmitting(false);
             // check why error occurs
             const message = err.response?.status === 400 ?
                 'User with this username or email already exist' : 'Error during sign up';
@@ -62,9 +64,9 @@ export default function Register(){
                     <Card.Body style={{display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                         <Card.Title className="text-center">Create new account</Card.Title>
                         <Formik initialValues={{username: '',email: '', password: '', passwordConfirm: ''}}
-                                onSubmit={async (values: RegistrationRequest): Promise<void> => submitRegistration(values)}
+                                onSubmit={(values: RegistrationRequest, {setSubmitting}) => submitRegistration(values, setSubmitting)}
                                 validationSchema={registrationSchema}>
-                            {({errors, isSubmitting, handleSubmit, handleChange, handleBlur, touched}) => (
+                            {({errors, isSubmitting, isValid, dirty, handleSubmit, handleChange, handleBlur, touched}) => (
                                 <Form onSubmit={handleSubmit} noValidate>
                                     <FormGroup controlId="username" className="mb-2">
                                         <Form.Label>Username</Form.Label>
@@ -87,11 +89,11 @@ export default function Register(){
                                         {touched.passwordConfirm && errors.passwordConfirm && <Alert style={{marginTop: '4px'}} variant="danger">{errors.passwordConfirm}</Alert>}
                                     </FormGroup>
                                     {/* change button after submitting */}
-                                    { !isSubmitting ?
-                                        <Button type="submit" >Register</Button> :
+                                    { isSubmitting ?
                                         <Button variant="primary" disabled>
-                                            <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true"/> Loading...
-                                        </Button>
+                                            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/> Loading...
+                                        </Button> :
+                                        <Button type="submit" disabled={isSubmitting || !isValid || !dirty}>Register</Button>
                                     }
                                 </Form>
                             )}

@@ -23,7 +23,7 @@ export default function Login(){
             .required("Password is required")
     });
 
-    function submitLogin(values: LoginRequest){
+    function submitLogin(values: LoginRequest, setSubmitting: (isSubmitting: boolean) => void){
         console.log(values);
 
         // send request to backend
@@ -31,10 +31,12 @@ export default function Login(){
             .then(res => {
                 const accessToken = res.data.access_token;
                 updateToken(accessToken);
+                setSubmitting(false);
                 pushNotification("Succesfully logged in", Variant.info);
                 navigate('/recipes');
             })
             .catch(err => {
+                setSubmitting(false);
                 console.error(err);
                 // check why error occurs
                 const message = err.response?.status === 401 ?
@@ -51,9 +53,11 @@ export default function Login(){
                     <Card.Body style={{display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                         <Card.Title className="text-center">Sign in</Card.Title>
                         <Formik initialValues={{username: '', password: ''}}
-                                onSubmit={async (values: LoginRequest): Promise<void> => {submitLogin(values)}}
+                                onSubmit={(values, { setSubmitting }) => {
+                                    submitLogin(values, setSubmitting);
+                                }}
                                 validationSchema={loginSchema}>
-                            {({errors, touched, isSubmitting, handleSubmit, handleChange, handleBlur}) => (
+                            {({errors, touched, dirty, isSubmitting,isValid , handleSubmit, handleChange, handleBlur}) => (
                                 <Form onSubmit={handleSubmit} noValidate>
                                     <FormGroup controlId="username" className="mb-3">
                                         <Form.Label>Username</Form.Label>
@@ -66,11 +70,11 @@ export default function Login(){
                                         {touched.password && errors.password && <Alert style={{marginTop: '10px'}} variant="danger">{errors.password}</Alert>}
                                     </FormGroup>
                                     {/* change button after submitting */}
-                                    { !isSubmitting ?
-                                        <Button type="submit">Sign in</Button> :
+                                    { isSubmitting ?
                                         <Button variant="primary" disabled>
-                                            <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true"/> Loading...
-                                        </Button>
+                                            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/> Loading...
+                                        </Button> :
+                                        <Button type="submit" disabled={isSubmitting || !isValid || !dirty}>Sign in</Button>
                                     }
                                 </Form>
                             )}

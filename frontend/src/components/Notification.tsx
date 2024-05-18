@@ -20,7 +20,7 @@ export default function Notification({message, variant}: {message: string, varia
 
     return (
         <div style={{ display: isVisible ? 'block' : 'none', position: "fixed", top: "75px", right: "50px"}}>
-            <Alert variant={variant} style={{width: '30vw'}} >{message}</Alert>
+            <Alert variant={variant} style={{width: '50vw'}} >{message}</Alert>
         </div>
     );
 }
