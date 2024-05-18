@@ -1,18 +1,16 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
+import { UserOverviewDto } from '../../users/dto/user-overview.dto';
+
+
 
 export class CommentDto {
   @Expose()
   @Transform((value) => value.obj._id.toString())
   _id: string;
 
-  @Expose()
-  @Transform((value) => value.obj.user_id.toString())
-  user_id: string;
-
-  // No need for that as we always specify which recipe we need
-  // @Expose()
-  // @Transform((value) => value.obj.recipe_id.toString())
-  // recipe_id: string;
+  @Expose({ name: "user_id" })
+  @Type(() => UserOverviewDto)
+  author: UserOverviewDto;
 
   @Expose()
   content: string;
