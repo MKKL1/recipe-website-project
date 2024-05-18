@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {Alert} from "react-bootstrap";
-import ReactDOM from "react-dom/client";
 import {useNotificationContext} from "../contexts/NotificationContext.tsx";
 
 export default function Notification({message, variant}: {message: string, variant: string}){

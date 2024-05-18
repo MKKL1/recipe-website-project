@@ -7,10 +7,10 @@ import {NotificationProvider} from "./contexts/NotificationContext.tsx";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-      <AuthProvider>
-          <NotificationProvider>
+      <NotificationProvider>
+            <AuthProvider>
               <App/>
-          </NotificationProvider>
-      </AuthProvider>
+          </AuthProvider>
+      </NotificationProvider>
   </React.StrictMode>,
 )

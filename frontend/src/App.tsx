@@ -12,19 +12,14 @@ import RecipeDetails from "./components/recipe/RecipeDetails.tsx";
 import {useEffect} from "react";
 import Notification from "./components/Notification.tsx";
 import {useNotificationContext} from "./contexts/NotificationContext.tsx";
+import AuthGuard from "./guards/AuthGuard.tsx";
+import GuestGuard from "./guards/GuestGuard.tsx";
+import AdminGuard from "./guards/AdminGuard.tsx";
 
 
 function App() {
     const {updateToken} = useAuthContext();
     const {message, variant} = useNotificationContext();
-
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if(token !== null && token !== ''){
-            console.log(token);
-            updateToken(token);
-        }
-    }, []);
 
     // TODO Add guard for routes based on roles
     // BACKEND NEED TO RETURN MORE INFO
@@ -35,23 +30,29 @@ function App() {
     // STYLING
 
   return (
-    <AuthProvider>
-        <div>
-            <BrowserRouter>
-                <NavigationBar/>
-                <Routes>
-                    <Route path='/' Component={Home}/>
-                    <Route path='/login' Component={Login}/>
-                    <Route path='/register' Component={Register}/>
-                    <Route path='/add' Component={RecipeForm}/>
-                    <Route path='/recipes' Component={Recipes}/>
-                    <Route path='/recipe-details/:id' Component={RecipeDetails}/>
-                    <Route path='/profile' Component={Profile}/>
-                </Routes>
-            </BrowserRouter>
-            <Notification message={message} variant={variant}/>
-        </div>
-    </AuthProvider>
+    <div>
+        <BrowserRouter>
+            <NavigationBar/>
+            <Routes>
+                <Route path='/' Component={Home}/>
+                <Route path='/login' element={<GuestGuard>
+                    <Login/>
+                </GuestGuard>}/>
+                <Route path='/register' element={<GuestGuard>
+                    <Register/>
+                </GuestGuard>}/>
+                <Route path='/add' element={<AdminGuard>
+                    <RecipeForm/>
+                </AdminGuard>}/>
+                <Route path='/recipes' Component={Recipes}/>
+                <Route path='/recipe-details/:id' Component={RecipeDetails}/>
+                <Route path='/profile' element={<AuthGuard>
+                    <Profile/>
+                </AuthGuard>}/>
+            </Routes>
+        </BrowserRouter>
+        <Notification message={message} variant={variant}/>
+    </div>
   )
 }
 

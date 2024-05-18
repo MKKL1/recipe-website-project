@@ -16,6 +16,10 @@ export default function Comments({commentsProp, recipeId}){
         setComments(commentsProp);
     }, [commentsProp]);
 
+    useEffect(() => {
+        console.log('auth' + isAuth);
+    }, [isAuth]);
+
     const handleCloseModal = (added: boolean, comment?: Comment) =>{
         setIsEditting(false);
         setCommentToEdit(null);
