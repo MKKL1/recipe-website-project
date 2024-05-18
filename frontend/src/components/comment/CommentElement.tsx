@@ -34,7 +34,7 @@ export default function CommentElement({comment, onDelete, onEdit}: {comment: Co
                 <Stack direction="horizontal">
                     <Stack>
                         <div className="comment">
-                            <p className="mb-0 me-3">{comment.user_id}</p>
+                            <p className="mb-0 me-3">{comment.author.username}</p>
                             <p className="mb-0">{comment.edited ?
                                 new Date(comment.updatedAt).toLocaleString('pl-PL') :
                                 new Date(comment.createdAt).toLocaleString('pl-PL')}</p>
@@ -42,7 +42,7 @@ export default function CommentElement({comment, onDelete, onEdit}: {comment: Co
                         <p className="mt-3">{comment.content}</p>
                     </Stack>
                     {
-                        user.id === comment.user_id && isAuth &&
+                        user.id === comment.author._id && isAuth &&
                         <div>
                             <DropdownButton title="More" variant="secondary">
                                 <DropdownItem onClick={editComment}>Edit</DropdownItem>
