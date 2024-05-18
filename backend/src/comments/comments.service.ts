@@ -1,10 +1,6 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, SortOrder } from 'mongoose';
+import { Model, SortOrder } from 'mongoose';
 import { Comment } from './schemas/comment.schema';
 import { User } from '../users/schemas/users.schema';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -20,11 +16,11 @@ export class CommentsService {
   }
 
   async getLimited(recipeId: string, limit: number, sort?: string | {[p: string]: SortOrder | {$meta: any}} | [string, SortOrder][]): Promise<Comment[]> {
-    return this.commentModel.find({ recipe_id: recipeId}).sort(sort).limit(limit).exec();
+    return this.commentModel.find({ recipe_id: recipeId}).sort(sort).limit(limit).populate('user_id').exec();
   }
 
   async getOne(id: string): Promise<Comment> {
-    return this.commentModel.findById(id).exec();
+    return await this.commentModel.findById(id).populate('user_id').exec();
   }
 
   async create(
