@@ -9,19 +9,17 @@ import {useEffect, useState} from "react";
 import {User} from "../../models/User.ts";
 import Notification from "../Notification.tsx";
 import {useNotificationContext} from "../../contexts/NotificationContext.tsx";
+import {Variant} from "../../models/Variant.ts";
+import {useNavigate} from "react-router-dom";
 
 export default function Profile(){
-    const {user, token} = useAuthContext();
+    const {user, token, resetToken} = useAuthContext();
     const {pushNotification} = useNotificationContext();
+    const navigate = useNavigate();
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
-    useEffect(() => {
-        console.log(user);
-
-    }, [user]);
 
     const dataSchema = object({
         email: Yup.string()
@@ -49,11 +47,11 @@ export default function Profile(){
             {headers: { Authorization: `Bearer ${token}`}})
             .then(res => {
                 console.log(res);
-                pushNotification('Changed user data','success');
+                pushNotification('Changed user data',Variant.info);
             })
             .catch(err => {
                 console.error(err);
-                pushNotification("Cannot change user data", "danger");
+                pushNotification("Cannot change user data", Variant.danger);
             })
     }
 
@@ -65,11 +63,11 @@ export default function Profile(){
             {headers: { Authorization: `Bearer ${token}`}})
             .then(res => {
                 console.log(res);
-                pushNotification('Changed password','success');
+                pushNotification('Changed password',Variant.info);
             })
             .catch(err => {
                 console.error(err);
-                pushNotification("Cannot change password", "danger");
+                pushNotification("Cannot change password", Variant.danger);
             })
     }
 
@@ -78,11 +76,13 @@ export default function Profile(){
             {headers: { Authorization: `Bearer ${token}`}})
             .then(res => {
                 console.log(res);
-                pushNotification('Deleted account','success');
+                resetToken();
+                pushNotification('Deleted account',Variant.info);
+                navigate("/");
             })
             .catch(err => {
                 console.error(err);
-                pushNotification("Cannot delete user", "danger");
+                pushNotification("Cannot delete user", Variant.danger);
             });
     }
 

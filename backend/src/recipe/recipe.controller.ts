@@ -90,6 +90,7 @@ export class RecipeController {
     await this.recipeService.updateRecipe(id, createRecipeDto);
   }
 
+  // every admin can delete other admin recipe
   @Delete(':id')
   @UseGuards(RolesGuard)
   @Roles('admin')

@@ -7,10 +7,13 @@ import axios from "axios";
 import {environment} from "../../../environment.ts";
 import { useAuthContext} from "../../contexts/AuthContext.tsx";
 import {useNavigate} from "react-router-dom";
+import {useNotificationContext} from "../../contexts/NotificationContext.tsx";
+import {Variant} from "../../models/Variant.ts";
 
 
 export default function Login(){
     const {updateToken} = useAuthContext();
+    const {pushNotification} = useNotificationContext();
     const navigate = useNavigate();
 
     const loginSchema = object({
@@ -28,10 +31,16 @@ export default function Login(){
             .then(res => {
                 const accessToken = res.data.access_token;
                 updateToken(accessToken);
+                pushNotification("Succesfully logged in", Variant.info);
                 navigate('/recipes');
             })
             .catch(err => {
                 console.error(err);
+                // check why error occurs
+                const message = err.response?.status === 401 ?
+                    'User with this username and password doesnt exist' : 'Error during logging in';
+
+                pushNotification(message, Variant.danger);
             });
     }
 

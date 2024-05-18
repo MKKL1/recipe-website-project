@@ -5,13 +5,16 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {environment} from "../../../environment.ts";
 import {useNavigate} from "react-router-dom";
+import {useNotificationContext} from "../../contexts/NotificationContext.tsx";
+import {Variant} from "../../models/Variant.ts";
 
 // TODO
 // add loading animation
 // add loading new recipes
 export default function RecipesList(){
+    const {pushNotification} = useNotificationContext();
     const [recipes, setRecipes] = useState([]);
-    const LIMIT: number = 10;
+    const LIMIT: number = 5;
     // let hasNextPage: boolean = false;
     const [paginator, setPaginator] = useState({
         page: 1,
@@ -29,6 +32,7 @@ export default function RecipesList(){
         loadRecipes(page);
     }, [page]);
 
+    // fix
     function loadRecipes(page: number) {
         setRecipes([]);
         axios.get(environment.apiUrl + "recipe", {
@@ -46,6 +50,7 @@ export default function RecipesList(){
             })
             .catch(err => {
                 console.error(err);
+                pushNotification("Error occur during loading recipes", Variant.danger);
             });
     }
 

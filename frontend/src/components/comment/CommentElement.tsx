@@ -3,9 +3,12 @@ import {Button, Card, DropdownButton, DropdownItem, Stack} from "react-bootstrap
 import axios from "axios";
 import {environment} from "../../../environment.ts";
 import {Comment} from "../../models/Comment.ts";
+import {useNotificationContext} from "../../contexts/NotificationContext.tsx";
+import {Variant} from "../../models/Variant.ts";
 
 export default function CommentElement({comment, onDelete, onEdit}: {comment: Comment, onDelete: any, onEdit: any}) {
     const {user, isAuth, token} = useAuthContext();
+    const {pushNotification} = useNotificationContext();
 
     function editComment(){
         onEdit(comment);
@@ -19,6 +22,7 @@ export default function CommentElement({comment, onDelete, onEdit}: {comment: Co
             })
             .catch(err => {
                 console.error(err);
+                pushNotification("Error during deleting comment", Variant.danger);
             });
     }
 

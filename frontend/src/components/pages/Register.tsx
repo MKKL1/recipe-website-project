@@ -7,9 +7,12 @@ import axios from "axios";
 import {environment} from "../../../environment.ts";
 import {useAuthContext} from "../../contexts/AuthContext.tsx";
 import {useNavigate} from "react-router-dom";
+import {useNotificationContext} from "../../contexts/NotificationContext.tsx";
+import {Variant} from "../../models/Variant.ts";
 
 export default function Register(){
     const {updateToken} = useAuthContext();
+    const {pushNotification} = useNotificationContext();
     const navigate = useNavigate();
 
     // TODO check if password are identical
@@ -39,10 +42,16 @@ export default function Register(){
         .then(res => {
             const accessToken = res.data.access_token;
             updateToken(accessToken);
+            pushNotification("Succesfully created account!", Variant.success);
             navigate('/recipes');
         })
         .catch(err => {
             console.error(err);
+            // check why error occurs
+            const message = err.response?.status === 400 ?
+                'User with this username or email already exist' : 'Error during sign up';
+
+            pushNotification(message, Variant.danger);
         });
     }
 

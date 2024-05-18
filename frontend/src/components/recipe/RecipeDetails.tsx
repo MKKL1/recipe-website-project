@@ -8,12 +8,15 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import RecipeContent from "./RecipeContent.tsx";
 import '../../styles/style.scss'
+import {useNotificationContext} from "../../contexts/NotificationContext.tsx";
+import {Variant} from "../../models/Variant.ts";
 
 export default function RecipeDetails(){
     let {id} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const {user, isAuth, token} = useAuthContext();
+    const {pushNotification} = useNotificationContext();
 
     const [recipe, setRecipe] = useState(new Recipe('','','','',[], '', Date.prototype));
     const [loading, setLoading] = useState(true);
@@ -35,6 +38,7 @@ export default function RecipeDetails(){
             .catch(err => {
                 setError(err);
                 console.error(err);
+                pushNotification("Cannot load recipe", Variant.danger);
             })
             .finally(() => {
                 setLoading(false);
@@ -59,10 +63,12 @@ export default function RecipeDetails(){
             {headers: { Authorization: `Bearer ${token}`}})
             .then(res => {
                 console.log(res);
+                pushNotification("Deleted recipe", Variant.info);
                 navigate('/recipes');
             })
             .catch(err => {
                 console.log(err);
+                pushNotification("Error during deleting recipe", Variant.danger);
             })
     }
 
@@ -77,32 +83,18 @@ export default function RecipeDetails(){
             </Row>
 
             <Row>
-
                 <div className="col-12 col-md-8">
                     <div className="recipe-headline my-5">
                         {/*<span>{recipe.updatedAt.toDateString()}</span>*/}
                         <h2>{recipe.title}</h2>
                     </div>
+                    {   isAuth && user.roles.includes("admin") && user.id === recipe.author_id &&
+                        <Button onClick={handleShowConfirm} variant="danger">Delete recipe</Button>
+                    }
                 </div>
-                {/*<h1>Details</h1>*/}
-                {/*<img src={environment.apiUrl + "image/" + recipe.image_id} alt={recipe.title}*/}
-                {/*     style={{width: 300, height: 300}}/>*/}
-                {/*{*/}
-                {/*    isAuth && user.id === recipe.author_id &&*/}
-                {/*    <div>*/}
-                {/*        <Button onClick={onEdit}>Edit</Button>*/}
-                {/*        <Button onClick={() => setShowConfirm(true)} variant="danger">Delete</Button>*/}
-                {/*    </div>*/}
-                {/*}*/}
-                {/*/!* Include basic info - lacking id for some reason *!/*/}
-                {/*<p> title {recipe.title}</p>*/}
-                {/*<p> id {recipe._id}</p>*/}
-                {/*<p> image {recipe.image_id}</p>*/}
-                {/*<p> author {recipe.author_id}</p>*/}
             </Row>
             <div>
                 {/* Display content */}
-                {/*<Editor onSave={() => {}} initData={recipe.content} readOnly={true}/>*/}
                 <RecipeContent data={recipe.content}/>
                 {/*  Comments section  */}
                 <Comments commentsProp={recipe.comments} recipeId={recipe._id}/>

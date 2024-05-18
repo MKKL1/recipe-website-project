@@ -18,15 +18,15 @@ import AdminGuard from "./guards/AdminGuard.tsx";
 
 
 function App() {
-    const {updateToken} = useAuthContext();
     const {message, variant} = useNotificationContext();
 
     // TODO Add guard for routes based on roles
     // BACKEND NEED TO RETURN MORE INFO
     // fix Editor js again
+    // edit recipe
+    // fix recipe form
     // pagination
     // return author name instead of id in recipes
-    // edit recipe
     // STYLING
 
   return (
