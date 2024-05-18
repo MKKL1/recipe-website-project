@@ -5,20 +5,9 @@ import {useNavigate} from "react-router-dom";
 import '../../styles/style.scss'
 
 export default function RecipeElement({recipe}: {recipe: RecipeOverview}){
-    // image_id is same as id
-    // image cant be loaded
     const navigate = useNavigate();
 
     return (
-        // <>
-        //     <h1>Recipe</h1>
-        //     <img src={environment.apiUrl + "image/" + recipe.image_id} alt={recipe.title}
-        //     style={{width: 200, height: 200}}/>
-        //     <p>Title {recipe.title}</p>
-        //     <p>Author {recipe.author_id}</p>
-        //     <p>Image {recipe.image_id}</p>
-        //     <p>Id {recipe.id}</p>
-        // </>
 
         <Card className="h-100 recipe-element" onClick={() => navigate(`/recipe-details/${recipe.id}`)}>
             <div className="thumbnail">
@@ -28,13 +17,11 @@ export default function RecipeElement({recipe}: {recipe: RecipeOverview}){
                 </div>
             </div>
 
+            {/* add more info*/}
             <Card.Body>
                 <Card.Title>{recipe.title}</Card.Title>
-
-                <Card.Text>
-                    {recipe.description}
-                </Card.Text>
-                {/*<Button variant="primary">Go somewhere</Button>*/}
+                {/* description doesn't exist*/}
+                <Card.Text>{recipe.description}</Card.Text>
             </Card.Body>
         </Card>
 );

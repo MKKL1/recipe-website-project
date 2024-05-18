@@ -8,12 +8,16 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import RecipeContent from "./RecipeContent.tsx";
 import '../../styles/style.scss'
+import {useNotificationContext} from "../../contexts/NotificationContext.tsx";
+import {Variant} from "../../models/Variant.ts";
+import "../../styles/recipes.css";
 
 export default function RecipeDetails(){
     let {id} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const {user, isAuth, token} = useAuthContext();
+    const {pushNotification} = useNotificationContext();
 
     const [recipe, setRecipe] = useState(new Recipe('','','','',[], '', Date.prototype));
     const [loading, setLoading] = useState(true);
@@ -35,6 +39,7 @@ export default function RecipeDetails(){
             .catch(err => {
                 setError(err);
                 console.error(err);
+                pushNotification("Cannot load recipe", Variant.danger);
             })
             .finally(() => {
                 setLoading(false);
@@ -59,10 +64,12 @@ export default function RecipeDetails(){
             {headers: { Authorization: `Bearer ${token}`}})
             .then(res => {
                 console.log(res);
+                pushNotification("Deleted recipe", Variant.info);
                 navigate('/recipes');
             })
             .catch(err => {
                 console.log(err);
+                pushNotification("Error during deleting recipe", Variant.danger);
             })
     }
 
@@ -71,59 +78,50 @@ export default function RecipeDetails(){
     if (!recipe) return <div>No recipe found</div>;
 
     return (
-        <Container className="px-4 px-lg-5 my-5 w-50">
+        <Container className="px-4 px-lg-5 my-5">
             <Row>
                 <Image src={environment.apiUrl + "image/" + recipe.image_id} className="img-fluid"/>
             </Row>
-
             <Row>
-
-                <div className="col-12 col-md-8">
+                <Stack direction="horizontal" className="col-12 col-md-8 w-100 justify-content-between">
                     <div className="recipe-headline my-5">
                         {/*<span>{recipe.updatedAt.toDateString()}</span>*/}
-                        <h2>{recipe.title}</h2>
+                        <h2 className="p-0 m-0">{recipe.title}</h2>
                     </div>
-                </div>
-                {/*<h1>Details</h1>*/}
-                {/*<img src={environment.apiUrl + "image/" + recipe.image_id} alt={recipe.title}*/}
-                {/*     style={{width: 300, height: 300}}/>*/}
-                {/*{*/}
-                {/*    isAuth && user.id === recipe.author_id &&*/}
-                {/*    <div>*/}
-                {/*        <Button onClick={onEdit}>Edit</Button>*/}
-                {/*        <Button onClick={() => setShowConfirm(true)} variant="danger">Delete</Button>*/}
-                {/*    </div>*/}
-                {/*}*/}
-                {/*/!* Include basic info - lacking id for some reason *!/*/}
-                {/*<p> title {recipe.title}</p>*/}
-                {/*<p> id {recipe._id}</p>*/}
-                {/*<p> image {recipe.image_id}</p>*/}
-                {/*<p> author {recipe.author_id}</p>*/}
+                    {   isAuth && user.roles.includes("admin") && user.id === recipe.author_id &&
+                        <div className="my-5">
+                            <Button onClick={onEdit} className="mx-2">Edit</Button>
+                            <Button onClick={handleShowConfirm} variant="danger">Delete</Button>
+                        </div>
+                    }
+                </Stack>
             </Row>
             <div>
                 {/* Display content */}
-                {/*<Editor onSave={() => {}} initData={recipe.content} readOnly={true}/>*/}
                 <RecipeContent data={recipe.content}/>
                 {/*  Comments section  */}
                 <Comments commentsProp={recipe.comments} recipeId={recipe._id}/>
                 {/* Modal for delete confirmation*/}
-                <Modal show={showConfirm} onHide={handleCloseConfirm} animation={false}>
+                <Modal show={showConfirm}
+                       aria-labelledby="contained-modal-title-vcenter"
+                       centered
+                       onHide={handleCloseConfirm}>
                     <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <h1>Are you sure you want to delete this recipe?</h1>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={handleCloseConfirm}>
-                                Close
-                            </Button>
-                            <Button variant="danger" onClick={onDelete}>
-                                Delete recipe
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-                </div>
+                        <Modal.Title>Deleting recipe</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <h4>Are you sure you want to delete this recipe?</h4>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleCloseConfirm}>
+                            Close
+                        </Button>
+                        <Button variant="danger" onClick={onDelete}>
+                            Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
         </Container>
     );
 }

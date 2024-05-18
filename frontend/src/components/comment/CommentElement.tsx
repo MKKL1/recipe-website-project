@@ -3,9 +3,13 @@ import {Button, Card, DropdownButton, DropdownItem, Stack} from "react-bootstrap
 import axios from "axios";
 import {environment} from "../../../environment.ts";
 import {Comment} from "../../models/Comment.ts";
+import {useNotificationContext} from "../../contexts/NotificationContext.tsx";
+import {Variant} from "../../models/Variant.ts";
+import "../../styles/Comment.css";
 
 export default function CommentElement({comment, onDelete, onEdit}: {comment: Comment, onDelete: any, onEdit: any}) {
     const {user, isAuth, token} = useAuthContext();
+    const {pushNotification} = useNotificationContext();
 
     function editComment(){
         onEdit(comment);
@@ -19,19 +23,23 @@ export default function CommentElement({comment, onDelete, onEdit}: {comment: Co
             })
             .catch(err => {
                 console.error(err);
+                pushNotification("Error during deleting comment", Variant.danger);
             });
     }
+
 
     return(
         <Card className="m-2">
             <Card.Body>
                 <Stack direction="horizontal">
                     <Stack>
-                        <Stack direction="horizontal">
-                            <h5 className="mb-0 me-3">{comment.user_id}</h5>
-                            <h5 className="mb-0">{comment.edited ? comment.updatedAt.toLocaleString() : comment.createdAt.toLocaleString()}</h5>
-                        </Stack>
-                        <p>{comment.content}</p>
+                        <div className="comment">
+                            <p className="mb-0 me-3">{comment.user_id}</p>
+                            <p className="mb-0">{comment.edited ?
+                                new Date(comment.updatedAt).toLocaleString('pl-PL') :
+                                new Date(comment.createdAt).toLocaleString('pl-PL')}</p>
+                        </div>
+                        <p className="mt-3">{comment.content}</p>
                     </Stack>
                     {
                         user.id === comment.user_id && isAuth &&

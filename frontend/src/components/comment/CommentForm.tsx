@@ -3,9 +3,12 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {environment} from "../../../environment.ts";
 import {useAuthContext} from "../../contexts/AuthContext.tsx";
+import {useNotificationContext} from "../../contexts/NotificationContext.tsx";
+import {Variant} from "../../models/Variant.ts";
 
 export default function CommentForm({show, handleClose, recipeId, isEditting, comment}){
     const [message, setMessage] = useState('');
+    const {pushNotification} = useNotificationContext();
     const {token} = useAuthContext();
 
     useEffect(() => {
@@ -19,8 +22,8 @@ export default function CommentForm({show, handleClose, recipeId, isEditting, co
     async function addComment(e: any){
         e.preventDefault();
 
-        // handle error in gui
         if(message.length < 3){
+            pushNotification("Message must have at least 3 characters", Variant.danger);
             return;
         }
 
@@ -35,6 +38,7 @@ export default function CommentForm({show, handleClose, recipeId, isEditting, co
                 })
                 .catch(err => {
                     console.log(err);
+                    pushNotification("Error during editing comment", Variant.danger);
                 });
         } else {
             axios.post(environment.apiUrl + "recipe/" + recipeId + "/comments",
@@ -47,13 +51,17 @@ export default function CommentForm({show, handleClose, recipeId, isEditting, co
                 })
                 .catch(err => {
                     console.log(err);
+                    pushNotification("Error during adding comment", Variant.danger);
                 });
         }
     }
 
     return (
         <>
-            <Modal show={show} size="lg" onHide={() => {
+            <Modal show={show} size="lg"
+                   aria-labelledby="contained-modal-title-vcenter"
+                   centered
+                   onHide={() => {
                     setMessage("");
                     handleClose();
                 }

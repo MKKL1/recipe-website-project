@@ -5,7 +5,7 @@ export default function Recipes(){
 
     return (
         <Stack>
-            <h1>Recipes: </h1>
+            <h1 className="text-center" style={{marginBottom: '50px', marginTop: '50px'}}>Recipes: </h1>
             <RecipesList/>
         </Stack>
     );

@@ -1,9 +1,9 @@
 import {useEffect, useState} from "react";
 import {Alert} from "react-bootstrap";
-import ReactDOM from "react-dom/client";
 import {useNotificationContext} from "../contexts/NotificationContext.tsx";
+import {Variant} from "../models/Variant.ts";
 
-export default function Notification({message, variant}: {message: string, variant: string}){
+export default function Notification({message, variant}: {message: string, variant: Variant}){
     const {flag} = useNotificationContext();
     const [isVisible, setIsVisible] = useState(true);
     const time = 4000;
@@ -19,8 +19,8 @@ export default function Notification({message, variant}: {message: string, varia
     }, [flag]);
 
     return (
-        <div style={{ display: isVisible ? 'block' : 'none', position: "absolute", top: "75px", right: "50px"}}>
-            <Alert variant={variant} style={{width: '30vw'}}>{message}</Alert>
+        <div style={{ display: isVisible ? 'block' : 'none', position: "fixed", top: "75px", right: "50px"}}>
+            <Alert variant={variant} style={{width: '50vw'}} >{message}</Alert>
         </div>
     );
 }

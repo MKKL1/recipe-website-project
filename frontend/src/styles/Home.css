@@ -1,0 +1,31 @@
+.home{
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 90vh;
+}
+
+.content-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left, .right {
+
+}
+
+.landing-image{
+    width: 75%;
+    height: auto;
+}
+
+@media (min-width: 1024px) {
+    .home {
+        flex-direction: row;
+    }
+
+    .content-container{
+        width: 50vw;
+    }
+}

@@ -1,0 +1,10 @@
+.comment{
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .comment{
+        flex-direction: row;
+    }
+}
