@@ -33,14 +33,23 @@ export class CommentsService {
       user_id: user._id,
       recipe_id: recipeId,
     });
-    return createdCat.save();
+
+    const saved = await createdCat.save();
+    const populated = await saved.populate('user_id');
+    return populated;
   }
 
   async update(id: string, createCommentDto: CreateCommentDto, user: User) {
     if (!(await this.checkPermission(id, user))) {
       throw new UnauthorizedException();
     }
-    return this.commentModel.findOneAndUpdate({ _id: id }, {...createCommentDto, edited: true}, {new: true}).exec();
+
+    return this.commentModel
+        .findOneAndUpdate(
+            { _id: id },
+            {...createCommentDto, edited: true},
+            {new: true})
+        .populate('user_id').exec();
   }
 
   async delete(id: string, user: User) {

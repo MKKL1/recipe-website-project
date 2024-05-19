@@ -23,6 +23,7 @@ export default function Comments({commentsProp, recipeId}){
         setIsEditting(false);
         setCommentToEdit(null);
         setShowModal(false);
+
         if(comment){
             if(added){
                 setComments([comment, ...comments]);

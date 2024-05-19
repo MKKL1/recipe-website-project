@@ -1,15 +1,9 @@
 .recipe-details{
-    width: 50%;
+    width: 75%;
 }
 
 @media (min-width: 768px) {
     .recipe-details{
-        width: 50%;
-    }
-}
-
-@media (min-width: 768px) {
-    .recipe-details{
-        width: 50%;
+        width: 50vw;
     }
 }

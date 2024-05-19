@@ -82,6 +82,7 @@ export class CommentsController {
   })
   @ApiBearerAuth()
   @ApiOkResponse({})
+  @UseInterceptors(new SerializeInterceptor<CommentDto>(CommentDto))
   async create(
     @GetUser() user: User,
     @Param('recipeId') recipeId: string,
@@ -107,6 +108,7 @@ export class CommentsController {
   })
   @ApiBearerAuth()
   @ApiOkResponse({})
+  @UseInterceptors(new SerializeInterceptor<CommentDto>(CommentDto))
   async update(
     @GetUser() user: User,
     @Param('commentId') commentId: string,

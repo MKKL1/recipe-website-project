@@ -32,7 +32,6 @@ export default function CommentForm({show, handleClose, recipeId, isEditting, co
                 {content: message},
                 {headers: { Authorization: `Bearer ${token}`}})
                 .then(res => {
-                    console.log(res);
                     handleClose(false, res.data);
                     setMessage("");
                 })

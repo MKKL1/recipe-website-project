@@ -78,7 +78,8 @@ export default function RecipeDetails(){
     if (!recipe) return <div>No recipe found</div>;
 
     return (
-        <Container className="px-4 px-lg-5 my-5">
+        // Add breakpoint for width
+        <Container className="px-4 px-lg-5 my-5 w-50">
             <Row>
                 <Image src={environment.apiUrl + "image/" + recipe.image_id} className="img-fluid"/>
             </Row>
