@@ -25,8 +25,9 @@ export class RecipeService {
   }
 
   async getOneRecipeWithComments(id: string, limit: number, sort?: string | {[p: string]: SortOrder | {$meta: any}} | [string, SortOrder][]): Promise<any> {
-    const obj = await this.recipeModel.findById(id).lean().exec();
-    obj['comments'] = await this.commentsService.getLimited(id, limit, sort);
+    const obj = await this.recipeModel.findById(id).lean().populate('author_id').exec();
+    obj['comments'] = await this.commentsService.getAll(id);
+    // obj['comments'] = await this.commentsService.getLimited(id, limit, sort);
     return obj;
   }
 

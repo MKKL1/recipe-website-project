@@ -11,6 +11,7 @@ export class RecipeOverviewDto{
     id: string;
 
     // get author data instead of id?
+    // isn't returned
     @Expose()
     @Transform((value) => {
         value.obj.author_id.toString()
@@ -25,7 +26,10 @@ export class RecipeOverviewDto{
     title: string;
 
     @Expose()
-    description?: string;
+    category: string;
+
+    @Expose()
+    createdAt: Date;
 
     // same as with author??
     @Expose()

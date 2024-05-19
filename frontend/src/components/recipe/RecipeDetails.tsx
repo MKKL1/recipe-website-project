@@ -1,9 +1,9 @@
 import {Recipe} from "../../models/Recipe.ts";
-import {Button, Container, Image, Modal, Row, Stack} from "react-bootstrap";
+import {Badge, Button, Container, Image, Modal, Row, Stack} from "react-bootstrap";
 import {useAuthContext} from "../../contexts/AuthContext.tsx";
 import Comments from "../comment/Comments.tsx";
 import {environment} from "../../../environment.ts";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import RecipeContent from "./RecipeContent.tsx";
@@ -11,15 +11,15 @@ import '../../styles/style.scss'
 import {useNotificationContext} from "../../contexts/NotificationContext.tsx";
 import {Variant} from "../../models/Variant.ts";
 import "../../styles/recipes.css";
+import UserOverviewDTO from "../../models/UserOverviewDTO.ts";
 
 export default function RecipeDetails(){
     let {id} = useParams();
     const navigate = useNavigate();
-    const location = useLocation();
     const {user, isAuth, token} = useAuthContext();
     const {pushNotification} = useNotificationContext();
 
-    const [recipe, setRecipe] = useState(new Recipe('','','','',[], '', Date.prototype));
+    const [recipe, setRecipe] = useState(new Recipe('',new UserOverviewDTO('',''),'','', '', new Date(), new Date(),'',[]));
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -31,10 +31,8 @@ export default function RecipeDetails(){
     useEffect(() => {
         axios.get(`${environment.apiUrl}recipe/${id}`) // Use environment variables for API URL
             .then(res => {
-                console.log("recipe: ");
-                console.log(res);
-                setRecipe(res.data);
                 console.log(res.data);
+                setRecipe(res.data);
             })
             .catch(err => {
                 setError(err);
@@ -86,16 +84,22 @@ export default function RecipeDetails(){
             <Row>
                 <Stack direction="horizontal" className="col-12 col-md-8 w-100 justify-content-between">
                     <div className="recipe-headline my-5">
-                        {/*<span>{recipe.updatedAt.toDateString()}</span>*/}
                         <h2 className="p-0 m-0">{recipe.title}</h2>
                     </div>
-                    {   isAuth && user.roles.includes("admin") && user.id === recipe.author_id &&
+                    {isAuth && user.roles.includes("admin") && user.id === recipe.author._id &&
                         <div className="my-5">
                             <Button onClick={onEdit} className="mx-2">Edit</Button>
                             <Button onClick={handleShowConfirm} variant="danger">Delete</Button>
                         </div>
                     }
                 </Stack>
+                <div>
+                    <Badge pill bg="secondary" style={{color: 'white', marginRight: '5px'}}>{
+                        new Date(recipe.createdAt == recipe.updatedAt ? recipe.createdAt : recipe.updatedAt).toLocaleString('pl-PL')
+                    }</Badge>
+                    <Badge pill>{recipe.category}</Badge>
+                </div>
+                <p>Author: {recipe.author.username}</p>
             </Row>
             <div>
                 {/* Display content */}

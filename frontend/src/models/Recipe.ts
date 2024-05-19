@@ -1,23 +1,26 @@
-import {string} from "yup";
 import {Comment} from "./Comment.ts";
+import {UserOverviewDto} from "./UserOverviewDTO.ts";
 
 export class Recipe{
     _id: string;
-    author_id: string;
+    author: UserOverviewDto;
     title: string;
     content: any;
-    comments: Comment[];
-    image_id: string;
+    category: string;
+    createdAt: Date;
     updatedAt: Date;
+    image_id: string;
+    comments: Comment[];
 
-
-    constructor(id: string, author_id: string, title: string, content: any, comments: Comment[], image_id: string, updatedAt: Date) {
+    constructor(id: string, author: UserOverviewDto, title: string, content: any, category: string, createdAt: Date, updatedAt: Date, image_id: string, comments: Comment[]) {
         this._id = id;
-        this.author_id = author_id;
+        this.author = author;
         this.title = title;
         this.content = content;
-        this.comments = comments;
-        this.image_id = image_id;
+        this.category = category;
+        this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.image_id = image_id;
+        this.comments = comments;
     }
 }

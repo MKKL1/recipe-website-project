@@ -14,7 +14,7 @@ export default function Home(){
                 </div>
             </div>
             <div className="content-container">
-                <div className="right"><Image className="landing-image" src="public/bread.jpg" rounded/></div>
+                <div className="right"><Image className="landing-image" src="bread.jpg" rounded/></div>
             </div>
         </div>
     );
