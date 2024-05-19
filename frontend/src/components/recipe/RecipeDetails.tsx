@@ -46,7 +46,7 @@ export default function RecipeDetails(){
 
     function onEdit(){
         console.log("Editing...");
-        // add editing
+
         navigate('/add', {
             state: {
                 update: true,

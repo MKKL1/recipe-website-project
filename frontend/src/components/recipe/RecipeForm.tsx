@@ -1,119 +1,141 @@
 import axios from "axios";
 import {environment} from "../../../environment.ts";
-import {Button, Card, Form, FormGroup, FormLabel} from "react-bootstrap";
-import {Formik} from "formik";
+import {Button, Card, Form, FormControl, FormGroup, FormLabel} from "react-bootstrap";
+import {Formik, useFormik} from "formik";
 import {useAuthContext} from "../../contexts/AuthContext.tsx";
 import {default as React, useEffect, useRef, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {Recipe} from "../../models/Recipe.ts";
-// @ts-ignore
-import Header from '@editorjs/header';
-// @ts-ignore
-import List from '@editorjs/list';
-// @ts-ignore
-import ImageTool from '@editorjs/image';
-import EditorJS, {EditorConfig, OutputData} from "@editorjs/editorjs";
+import {OutputData} from "@editorjs/editorjs";
+import {useNotificationContext} from "../../contexts/NotificationContext.tsx";
+import {Variant} from "../../models/Variant.ts";
+import Editor from "./Editor.tsx";
 
-// TODO validate input
 export default function RecipeForm(){
+    const {pushNotification} = useNotificationContext();
+    const {token} = useAuthContext();
     const navigate = useNavigate();
     const location = useLocation();
-    const {token} = useAuthContext();
-    // const [data, setData] = useState({});
-    const [file, setFile] = useState(null);
-    const [recipeToEdit, setRecipeToEdit] = useState(new Recipe('','','','',[], '', Date.prototype));
-    // const [editor, setEditor] = useState<EditorJS>();
 
-    const ejInstance = useRef<EditorJS>();
+    const [content, setContent] = useState<{
+        time: number, blocks: [], version: string
+    }>({blocks: [], time: 0, version: ""});
+    const [initData, setInitData] = useState<{
+        time: number, blocks: [], version: string
+    }>({blocks: [], time: 0, version: ""});
+    const [file, setFile] = useState();
+    const [editing, setEditing] = useState<boolean>(false);
+    const [title, setTitle] = useState<string>("");
+    const [category, setCategory] = useState<string>("");
+    const [id, setId] = useState<string>("");
 
-    const initEditor = () => {
-        const editor = new EditorJS({
-            holder: 'editorjs',
-            onReady: () => {
-                ejInstance.current = editor;
-            },
-            autofocus: true,
-            tools: {
-                header: Header,
-                list: List,
-                image: {
-                    class: ImageTool,
-                    config: {
-                        endpoints: {
-                            byFile: environment.apiUrl + "image",
-                            byUrl: environment.apiUrl + "image"
-                        }
-                    }
-                }
-            },
-        });
-    };
 
     useEffect(() => {
-        if (ejInstance.current === null) {
-            initEditor();
+        const state = location.state;
+
+        if(state && state.update){
+            const recipe = state.recipe;
+
+            console.log(recipe);
+
+            setEditing(true);
+            setTitle(recipe.title);
+            setCategory(recipe.category);
+            setId(recipe._id);
+            setContent(recipe.content);
+
+            // 🤡🤡🤡
+            setTimeout(() => {
+                console.log('waiting...');
+                setInitData(recipe.content);
+            }, 50);
         }
 
-        if(location.state && location.state.update) {
-            ejInstance?.current?.render({blocks: location.state.recipe.blocks})
-        }
-
-        return () => {
-            ejInstance?.current?.destroy();
-            // @ts-ignore
-            ejInstance.current = null;
-        };
-    }, []);
+    }, [location.state]);
 
     function handleFile(event: any){
-        if(event.target.files){
+        const files = event.target.files;
+
+        if(files && files[0]){
+            if(!files[0].type.startsWith('image/')){
+                console.error("Wrong file type");
+                pushNotification("File type must be a image", Variant.danger);
+                return;
+            }
+
             setFile(event.target.files[0]);
         }
     }
 
-    async function onSubmit(values: any, data: Promise<OutputData>){
-        //TODO add error in ui
-        const adata = await data;
-        console.log(adata);
-        if(adata.blocks.length === 0){
+    async function onSubmit(e: any){
+        e.preventDefault();
+
+        if(content.blocks.length === 0){
             console.error("Empty content");
+            pushNotification("Empty content", Variant.danger);
             return;
         }
 
-        //TODO add error in ui
         if(file === null){
             console.error("Empty image");
+            pushNotification("Empty image", Variant.danger);
             return;
         }
 
-        if(values.title == "" || values.category == ""){
+        if(title == "" || category === undefined){
             console.error("Wrong title or cateogry");
+            pushNotification("Empty title or category", Variant.danger);
             return;
         }
+
+        console.log(content);
+
         const recipeData = {
-          title: values.title,
-          category: values.category,
-          content: adata
+          title: title,
+          category: category,
+          content: content
         };
 
-        let formData = new FormData();
-        // @ts-ignore
-        formData.append('image', file);
-        formData.append('recipe', JSON.stringify(recipeData));
+        if(editing){
+            // editing existing recipe
+            axios.put(environment.apiUrl + "recipe/" + id,
+                recipeData,
+                {headers: { Authorization: `Bearer ${token}` }})
+                .then(res => {
+                    console.log(res);
+                    pushNotification("Recipe updated", Variant.info);
+                    navigate('/recipe-details/' + id);
+                })
+                .catch(err => {
+                   console.error(err);
+                   pushNotification("Cannot edit recipe", Variant.danger);
+                });
+        } else {
+            // creating new recipe
+            let formData = new FormData();
+            // @ts-ignore
+            formData.append('image', file);
+            formData.append('recipe', JSON.stringify(recipeData));
 
-        // TODO handle error
-        axios.post(environment.apiUrl + "recipe",
-            formData,
-            {headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "multipart/form-data"
-            }})
-            .then(res => {
-                navigate(`/recipe-details/${res.data._id}`);
-            })
-            .catch(err => {
-                console.error(err);
-            });
+            axios.post(environment.apiUrl + "recipe",
+                formData,
+                {headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data"
+                    }})
+                .then(res => {
+                    pushNotification("Added recipe", Variant.success);
+                    navigate(`/recipe-details/${res.data._id}`);
+                })
+                .catch(err => {
+                    console.error(err);
+                    pushNotification("Cannot add recipe", Variant.danger);
+                });
+        }
+    }
+
+    function saveTextEditorState(output: OutputData){
+        setContent(output);
     }
 
     return (
@@ -121,37 +143,26 @@ export default function RecipeForm(){
             <Card style={{margin: '100px'}}>
                 <Card.Body>
                     <Card.Title className="text-center">Add new recipe</Card.Title>
-                    <Formik initialValues={{title: '', file: null}} onSubmit={values => onSubmit(values, ejInstance?.current?.save())}>
-                        {({handleSubmit, handleChange}) => (
-                            <Form onSubmit={handleSubmit} noValidate>
-                                <FormGroup controlId="title" className="mb-3">
-                                    <Form.Label>Recipe title</Form.Label>
-                                    <Form.Control type="text" name="title" onChange={handleChange}
-                                                  placeholder="Enter recipe title"></Form.Control>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Form.Select aria-label="Default select example" name="category" onChange={handleChange}>
-                                        <option>Select category</option>
-                                        <option value="chleb">Chleb</option>
-                                        <option value="bulka">Bułka</option>
-                                        <option value="bagieta">Bagieta</option>
-                                    </Form.Select>
-                                </FormGroup>
-                                <FormGroup>
-                                    <input id="file" name="file" type="file" onChange={handleFile}/>
-                                </FormGroup>
-
-                                <FormGroup>
-                                    <Form.Label>Content</Form.Label>
-                                    <div id="editorjs" className="editor"></div>
-                                </FormGroup>
-
-                                <Button type="submit">Add Recipe</Button>
-                            </Form>
-                        )}
-                    </Formik>
-
-                    {/*<Editor onSave={saveTextEditorState} readOnly={false} initData={recipeToEdit.content}/>*/}
+                        <Form onSubmit={onSubmit} noValidate>
+                            <FormGroup controlId="title" className="mb-3">
+                                <Form.Label>Recipe title</Form.Label>
+                                <Form.Control type="text" name="title" value={title} onChange={e => setTitle(e.target.value)}
+                                              placeholder="Enter recipe title"></Form.Control>
+                            </FormGroup>
+                            <FormGroup className="mb-3">
+                                <Form.Select aria-label="Default select example" value={category} name="category" onChange={e => setCategory(e.target.value)}>
+                                    <option>Select category</option>
+                                    <option value="chleb">Chleb</option>
+                                    <option value="bulka">Bułka</option>
+                                    <option value="bagieta">Bagieta</option>
+                                </Form.Select>
+                            </FormGroup>
+                            <FormGroup className="mb-3">
+                                <FormControl id="file" name="file" type="file" onChange={handleFile}></FormControl>
+                            </FormGroup>
+                            <Editor saveData={saveTextEditorState} initData={initData}/>
+                            <Button type="submit">Save Recipe</Button>
+                        </Form>
                 </Card.Body>
             </Card>
         </>
