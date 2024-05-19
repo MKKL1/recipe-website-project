@@ -16,6 +16,7 @@ export class Recipe {
   @Prop({ required: true })
   title: string;
 
+  // does it even exists?
   @Prop({ required: false })
   description: string;
 

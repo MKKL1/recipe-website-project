@@ -1,5 +1,3 @@
-import {boolean, string} from "yup";
-
 export class CommentAuthor {
     _id: string;
     username: string;

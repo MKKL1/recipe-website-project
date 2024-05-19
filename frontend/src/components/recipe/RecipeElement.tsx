@@ -1,6 +1,6 @@
 import {RecipeOverview} from "../../models/RecipeOverview.ts";
 import {environment} from "../../../environment.ts";
-import {Card} from "react-bootstrap";
+import {Badge, Card} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import '../../styles/style.scss'
 
@@ -16,12 +16,12 @@ export default function RecipeElement({recipe}: {recipe: RecipeOverview}){
                               className=" img-responsive full-width"/>
                 </div>
             </div>
-
-            {/* add more info*/}
             <Card.Body>
                 <Card.Title>{recipe.title}</Card.Title>
-                {/* description doesn't exist*/}
-                <Card.Text>{recipe.description}</Card.Text>
+                <Card.Text>
+                    <Badge pill bg="secondary" className="me-1">{new Date(recipe.createdAt).toLocaleDateString('pl-PL')}</Badge>
+                    <Badge pill>{recipe.category}</Badge>
+                </Card.Text>
             </Card.Body>
         </Card>
 );
