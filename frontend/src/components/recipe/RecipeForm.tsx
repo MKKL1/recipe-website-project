@@ -22,7 +22,7 @@ export default function RecipeForm(){
     const {token} = useAuthContext();
     // const [data, setData] = useState({});
     const [file, setFile] = useState(null);
-    const [recipeToEdit, setRecipeToEdit] = useState(new Recipe('','','','',[], '', Date.prototype));
+    const [recipeToEdit, setRecipeToEdit] = useState(new Recipe());
     // const [editor, setEditor] = useState<EditorJS>();
 
     const [categories, setCategories] = useState([]);

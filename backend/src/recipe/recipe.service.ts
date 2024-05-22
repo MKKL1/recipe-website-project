@@ -31,6 +31,63 @@ export class RecipeService {
     return obj;
   }
 
+  async getRecipesByCategories() {
+    return this.recipeModel.aggregate([
+      {
+        '$lookup': {
+          'from': 'categories',
+          'localField': 'category_id',
+          'foreignField': '_id',
+          'as': 'category_details'
+        }
+      }, {
+        '$unwind': {
+          'path': '$category_details'
+        }
+      },
+      {
+        '$lookup': {
+          'from': 'users',
+          'localField': 'author_id',
+          'foreignField': '_id',
+          'as': 'author_details'
+        }
+      },
+      {
+        '$unwind': '$author_details'
+      },
+
+      {
+        '$group': {
+          '_id': '$category_details._id',
+          'category_name': {
+            '$first': '$category_details.name'
+          },
+          'recipes': {
+            '$push': {
+              '_id': '$_id',
+              'title': '$title',
+              'author': {
+                '_id': '$author_id',
+                'name': '$author_details.username'
+              },
+              'image_id': '$image_id',
+              'createdAt': '$createdAt',
+              'updatedAt': '$updatedAt'
+            }
+          }
+        }
+      }, {
+        '$project': {
+          '_id': 0,
+          'category_id': '$_id',
+          'category_name': 1,
+          'recipes': 1
+        }
+      }
+    ]).exec();
+  }
+
   async create(user: User, recipeDto: CreateRecipeDto, image: Express.Multer.File): Promise<Recipe> {
     const saved = await this.imageService.saveFile(image);
     const recipe = await new this.recipeModel({
