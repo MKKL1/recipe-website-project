@@ -15,6 +15,7 @@ import {useNotificationContext} from "./contexts/NotificationContext.tsx";
 import AuthGuard from "./guards/AuthGuard.tsx";
 import GuestGuard from "./guards/GuestGuard.tsx";
 import AdminGuard from "./guards/AdminGuard.tsx";
+import Categories from "./components/recipe/Categories.tsx";
 
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
                     <RecipeForm/>
                 </AdminGuard>}/>
                 <Route path='/recipes' Component={Recipes}/>
+                <Route path='/categories' Component={Categories}/>
                 <Route path='/recipe-details/:id' Component={RecipeDetails}/>
                 <Route path='/profile' element={<AuthGuard>
                     <Profile/>
