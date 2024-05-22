@@ -116,6 +116,7 @@ export default function RecipeForm(){
         formData.append('image', file);
         formData.append('recipe', JSON.stringify(recipeData));
 
+        console.log(recipeData);
         // TODO handle error
         axios.post(environment.apiUrl + "recipe",
             formData,

@@ -9,6 +9,8 @@ export function paginateTool<T>(paginateModel: PaginateModel<T>, paginationOptio
       page: paginationOptionsDto.page,
       limit: paginationOptionsDto.limit,
       sort: paginationOptionsDto.sort,
+      populate: ["category_id"],
+      lean: true,
       customLabels: { meta: 'paginator' },
     }, (err, result) => {
       if(err) {

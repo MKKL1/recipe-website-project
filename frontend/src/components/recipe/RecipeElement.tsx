@@ -20,7 +20,7 @@ export default function RecipeElement({recipe}: {recipe: RecipeOverview}){
                 <Card.Title>{recipe.title}</Card.Title>
                 <Card.Text>
                     <Badge pill bg="secondary" className="me-1">{new Date(recipe.createdAt).toLocaleDateString('pl-PL')}</Badge>
-                    <Badge pill>{recipe.category}</Badge>
+                    <Badge pill>{recipe.category.name}</Badge>
                 </Card.Text>
             </Card.Body>
         </Card>

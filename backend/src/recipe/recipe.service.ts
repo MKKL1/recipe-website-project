@@ -1,4 +1,4 @@
-import { Model, PaginateModel, SortOrder } from 'mongoose';
+import { Model, PaginateModel, SortOrder, Types } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Recipe } from './schemas/recipe.schema';
@@ -35,7 +35,10 @@ export class RecipeService {
     const saved = await this.imageService.saveFile(image);
     const recipe = await new this.recipeModel({
       author_id: user._id,
-      ...recipeDto,
+      title: recipeDto.title,
+      description: recipeDto.description,
+      content: recipeDto.content,
+      category_id: new Types.ObjectId(recipeDto.category_id),
       image_id: saved._id
     }).save();
 

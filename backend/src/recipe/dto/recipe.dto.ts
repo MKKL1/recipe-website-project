@@ -28,9 +28,9 @@ export class RecipeDto {
   @Expose()
   content: string;
 
-  @Expose()
+  @Expose({name: 'category_id'})
   @Type(() => CategoryDto)
-  category_id: CategoryDto;
+  category: CategoryDto;
 
   @Expose()
   createdAt: Date;
