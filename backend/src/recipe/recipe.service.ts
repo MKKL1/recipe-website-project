@@ -19,13 +19,13 @@ export class RecipeService {
   async findAll(paginationOptionsDto: PaginationOptionsDto): Promise<any> {
     return paginateTool(this.recipeModelPag, paginationOptionsDto);
   }
-
-  async getOneRecipe(id: string): Promise<Recipe> {
-    return this.recipeModel.findById(id).exec();
-  }
+  //
+  // async getOneRecipe(id: string): Promise<Recipe> {
+  //   return this.recipeModel.findById(id).exec();
+  // }
 
   async getOneRecipeWithComments(id: string, limit: number, sort?: string | {[p: string]: SortOrder | {$meta: any}} | [string, SortOrder][]): Promise<any> {
-    const obj = await this.recipeModel.findById(id).lean().populate('author_id').exec();
+    const obj = await this.recipeModel.findById(id).lean().populate('author_id').populate('category_id').exec();
     obj['comments'] = await this.commentsService.getAll(id);
     // obj['comments'] = await this.commentsService.getLimited(id, limit, sort);
     return obj;

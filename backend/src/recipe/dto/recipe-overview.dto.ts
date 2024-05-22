@@ -26,7 +26,7 @@ export class RecipeOverviewDto{
     title: string;
 
     @Expose()
-    category: string;
+    category_id: string;
 
     @Expose()
     createdAt: Date;

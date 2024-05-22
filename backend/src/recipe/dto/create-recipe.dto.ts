@@ -44,5 +44,6 @@ export class CreateRecipeDto {
   // @IsString()
   readonly content: string;
 
-  readonly category: string;
+  //TODO check if it links to correct category
+  readonly category_id: string;
 }

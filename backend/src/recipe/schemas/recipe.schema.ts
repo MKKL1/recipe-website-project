@@ -3,6 +3,7 @@ import { HydratedDocument, Types, Schema as S } from 'mongoose';
 import { User } from '../../users/schemas/users.schema';
 import * as paginate from "mongoose-paginate-v2";
 import { Image } from '../../image/schemas/image.schema';
+import {Category} from "../../category/schemas/category.schema";
 
 export type RecipeDocument = HydratedDocument<Recipe>;
 
@@ -20,9 +21,8 @@ export class Recipe {
   @Prop({ required: false })
   description: string;
 
-  // temporary values in enum
-  @Prop({type: String, enum: ['chleb', 'bulka', 'bagieta']})
-  category: string;
+  @Prop({type: Types.ObjectId, ref: Category.name})
+  category_id: Category;
 
   @Prop()
   content: S.Types.Mixed;
