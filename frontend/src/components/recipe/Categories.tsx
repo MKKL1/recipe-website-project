@@ -19,9 +19,11 @@ export default function Categories(){
         axios.get(environment.apiUrl + "recipe/categories", )
             .then(res => {
                 console.log(res.data);
+                // mapping to valid format
                 res.data.map(recipeCategory => {
                     recipeCategory.recipes.map(recipe => {
                         recipe.category = recipeCategory.category_name;
+                        recipe.id = recipe._id;
                     });
                 });
 
