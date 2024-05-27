@@ -85,7 +85,7 @@ export default function Register(){
                                     </FormGroup>
                                     <FormGroup controlId="passwordConfirm" className="mb-2">
                                         <Form.Label>Confirm password</Form.Label>
-                                        <Form.Control type="passwordConfirm" name="passwordConfirm" placeholder="Confirm your password" onChange={handleChange} onBlur={handleBlur}/>
+                                        <Form.Control type="password" name="passwordConfirm" placeholder="Confirm your password" onChange={handleChange} onBlur={handleBlur}/>
                                         {touched.passwordConfirm && errors.passwordConfirm && <Alert style={{marginTop: '4px'}} variant="danger">{errors.passwordConfirm}</Alert>}
                                     </FormGroup>
                                     {/* change button after submitting */}
