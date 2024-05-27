@@ -2,7 +2,7 @@ import {string} from "yup";
 import {Category} from "./Category.ts";
 
 export class RecipeOverview {
-    id: string = '';
+    _id: string = '';
     title: string = '';
     author_id: string = '';
     category: Category = new Category();

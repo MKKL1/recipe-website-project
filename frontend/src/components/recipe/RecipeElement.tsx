@@ -7,13 +7,15 @@ import '../../styles/style.scss'
 export default function RecipeElement({recipe}: {recipe: RecipeOverview}){
     const navigate = useNavigate();
 
+    console.log(recipe._id);
+
     return (
 
-        <Card className="h-100 recipe-element" onClick={() => navigate(`/recipe-details/${recipe.id}`)}>
+        <Card className="h-100 recipe-element" onClick={() => navigate(`/recipe-details/${recipe._id}`)}>
             <div className="thumbnail">
                 <div className="image">
-                    <Card.Img variant="top" src={environment.apiUrl + "image/" + recipe.image_id} alt={recipe.title}
-                              className=" img-responsive full-width"/>
+                    <Card.Img variant="top" src={environment.apiUrl + "image/" + recipe.image_id}
+                             style={{width: '300px', height: "auto"}} alt={recipe.title}/>
                 </div>
             </div>
             <Card.Body>
