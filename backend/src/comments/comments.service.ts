@@ -66,6 +66,6 @@ export class CommentsService {
     if (!comment) {
       throw new NotFoundException();
     }
-    return comment.user_id._id === user._id;
+    return comment.user_id._id.equals(user._id);
   }
 }
