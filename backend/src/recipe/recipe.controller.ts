@@ -92,7 +92,7 @@ export class RecipeController {
     @Param('id') id: string,
     @Body() createRecipeDto: CreateRecipeDto,
   ) {
-    await this.recipeService.updateRecipe(id, createRecipeDto);
+    return this.recipeService.updateRecipe(id, createRecipeDto);
   }
 
   // every admin can delete other admin recipe

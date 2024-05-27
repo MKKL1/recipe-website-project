@@ -93,7 +93,6 @@ export class RecipeService {
     const recipe = await new this.recipeModel({
       author_id: user._id,
       title: recipeDto.title,
-      description: recipeDto.description,
       content: recipeDto.content,
       category_id: new Types.ObjectId(recipeDto.category_id),
       image_id: saved._id
