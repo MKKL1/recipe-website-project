@@ -6,10 +6,11 @@ import { Recipe, RecipeSchema } from './schemas/recipe.schema';
 import { SerializeInterceptor } from '../interceptors/serialize.interceptor';
 import { ImageModule } from '../image/image.module';
 import { CommentsModule } from '../comments/comments.module';
+import {Category, CategorySchema} from "../category/schemas/category.schema";
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Recipe.name, schema: RecipeSchema }]),
+    MongooseModule.forFeature([{ name: Recipe.name, schema: RecipeSchema }, { name: Category.name, schema: CategorySchema }]),
     SerializeInterceptor,
     ImageModule,
     CommentsModule

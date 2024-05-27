@@ -19,6 +19,7 @@ export default function NavigationBar(){
                         <Nav.Link as={Link} to='/add'>Add</Nav.Link>
                     }
                     <Nav.Link as={Link} to='/recipes'>Recipes</Nav.Link>
+                    <Nav.Link as={Link} to='/categories'>Categories</Nav.Link>
                     { isAuth ?
                         <>
                             <Nav.Link as={Link} to='/profile'>Hello, {user.username}</Nav.Link>

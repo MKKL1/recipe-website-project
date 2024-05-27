@@ -47,6 +47,11 @@ export class RecipeController {
     return this.recipeService.findAll(paginationOptionsDto);
   }
 
+  @Get('categories')
+  async findAllByCategories() {
+    return this.recipeService.getRecipesByCategories();
+  }
+
   @Get(':id')
   @UseInterceptors(new SerializeInterceptor<RecipeDto>(RecipeDto))
   @ApiOperation({ summary: 'Get recipe by specified id' })

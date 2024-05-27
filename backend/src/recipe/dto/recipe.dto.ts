@@ -2,6 +2,7 @@ import { Expose, Transform, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { CommentDto } from '../../comments/dto/comment.dto';
 import {UserOverviewDto} from "../../users/dto/user-overview.dto";
+import {CategoryDto} from "../../category/dto/category.dto";
 
 export class RecipeDto {
   @Expose()
@@ -27,8 +28,9 @@ export class RecipeDto {
   @Expose()
   content: string;
 
-  @Expose()
-  category: string;
+  @Expose({name: 'category_id'})
+  @Type(() => CategoryDto)
+  category: CategoryDto;
 
   @Expose()
   createdAt: Date;

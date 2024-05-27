@@ -19,7 +19,7 @@ export default function RecipeDetails(){
     const {user, isAuth, token} = useAuthContext();
     const {pushNotification} = useNotificationContext();
 
-    const [recipe, setRecipe] = useState(new Recipe('',new UserOverviewDTO('',''),'','', '', new Date(), new Date(),'',[]));
+    const [recipe, setRecipe] = useState(new Recipe());
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -97,7 +97,7 @@ export default function RecipeDetails(){
                     <Badge pill bg="secondary" style={{color: 'white', marginRight: '5px'}}>{
                         new Date(recipe.createdAt == recipe.updatedAt ? recipe.createdAt : recipe.updatedAt).toLocaleString('pl-PL')
                     }</Badge>
-                    <Badge pill>{recipe.category}</Badge>
+                    <Badge pill>{recipe.category.name}</Badge>
                 </div>
                 <p>Author: {recipe.author.username}</p>
             </Row>

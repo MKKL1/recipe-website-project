@@ -1,19 +1,15 @@
 import {string} from "yup";
+import {Category} from "./Category.ts";
 
 export class RecipeOverview {
-    id: string;
-    title: string;
-    author_id: string;
-    category: string;
-    createdAt: Date;
-    image_id: string;
+    id: string = '';
+    title: string = '';
+    author_id: string = '';
+    category: Category = new Category();
+    createdAt: Date = Date.prototype;
+    image_id: string = '';
 
-    constructor(id: string, title: string, author_id: string, category: string, createdAt: Date, image_id: string) {
-        this.id = id;
-        this.title = title;
-        this.author_id = author_id;
-        this.category = category;
-        this.createdAt = createdAt;
-        this.image_id = image_id;
+    public constructor(init?:Partial<RecipeOverview>) {
+        Object.assign(this, init);
     }
 }

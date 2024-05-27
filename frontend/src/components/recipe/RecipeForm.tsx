@@ -13,6 +13,7 @@ import List from '@editorjs/list';
 // @ts-ignore
 import ImageTool from '@editorjs/image';
 import EditorJS, {EditorConfig, OutputData} from "@editorjs/editorjs";
+import RecipeElement from "./RecipeElement.tsx";
 
 // TODO validate input
 export default function RecipeForm(){
@@ -21,9 +22,10 @@ export default function RecipeForm(){
     const {token} = useAuthContext();
     // const [data, setData] = useState({});
     const [file, setFile] = useState(null);
-    const [recipeToEdit, setRecipeToEdit] = useState(new Recipe('','','','',[], '', Date.prototype));
+    const [recipeToEdit, setRecipeToEdit] = useState(new Recipe());
     // const [editor, setEditor] = useState<EditorJS>();
 
+    const [categories, setCategories] = useState([]);
     const ejInstance = useRef<EditorJS>();
 
     const initEditor = () => {
@@ -49,6 +51,16 @@ export default function RecipeForm(){
         });
     };
 
+    // loading categories from backend
+    useEffect(() => {
+        axios.get(environment.apiUrl + 'category/')
+            .then(res => {
+                console.log(res);
+                setCategories(res.data);
+            }).catch(err => console.error(err));
+
+    }, []);
+
     useEffect(() => {
         if (ejInstance.current === null) {
             initEditor();
@@ -72,6 +84,9 @@ export default function RecipeForm(){
     }
 
     async function onSubmit(values: any, data: Promise<OutputData>){
+
+        console.log(values);
+
         //TODO add error in ui
         const adata = await data;
         console.log(adata);
@@ -92,7 +107,7 @@ export default function RecipeForm(){
         }
         const recipeData = {
           title: values.title,
-          category: values.category,
+          category_id: values.category,
           content: adata
         };
 
@@ -101,6 +116,7 @@ export default function RecipeForm(){
         formData.append('image', file);
         formData.append('recipe', JSON.stringify(recipeData));
 
+        console.log(recipeData);
         // TODO handle error
         axios.post(environment.apiUrl + "recipe",
             formData,
@@ -132,9 +148,12 @@ export default function RecipeForm(){
                                 <FormGroup>
                                     <Form.Select aria-label="Default select example" name="category" onChange={handleChange}>
                                         <option>Select category</option>
-                                        <option value="chleb">Chleb</option>
-                                        <option value="bulka">Bułka</option>
-                                        <option value="bagieta">Bagieta</option>
+                                        {/*<option value="chleb">Chleb</option>*/}
+                                        {/*<option value="bulka">Bułka</option>*/}
+                                        {/*<option value="bagieta">Bagieta</option>*/}
+                                        {categories.map((category, index) => (
+                                            <option key={index} value={category._id}>{category.name}</option>
+                                        ))}
                                     </Form.Select>
                                 </FormGroup>
                                 <FormGroup>
