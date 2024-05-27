@@ -101,8 +101,16 @@ export class RecipeService {
     return recipe;
   }
 
-  async updateRecipe(id: string, createRecipeDto: CreateRecipeDto) {
-    return this.recipeModel.updateOne({ _id: id }, createRecipeDto).exec();
+  async updateRecipe(id: string, createRecipeDto: CreateRecipeDto, file: Express.Multer.File) {
+    console.log(file);
+
+    if(file === undefined){
+      return this.recipeModel.updateOne({ _id: id }, createRecipeDto).exec();
+    }
+
+    const saved = await this.imageService.saveFile(file);
+    return this.recipeModel.updateOne({ _id: id }, {...createRecipeDto,
+      image_id: saved._id}).exec();
   }
 
   async deleteRecipe(id: string) {

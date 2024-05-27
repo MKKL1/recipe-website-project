@@ -1,11 +1,9 @@
 import axios from "axios";
 import {environment} from "../../../environment.ts";
-import {Button, Card, Form, FormGroup, FormLabel} from "react-bootstrap";
-import {Formik} from "formik";
+import {Button, Card, Form, FormGroup, Image} from "react-bootstrap";
 import {useAuthContext} from "../../contexts/AuthContext.tsx";
 import {default as React, useEffect, useRef, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
-import {Recipe} from "../../models/Recipe.ts";
 // @ts-ignore
 import Header from '@editorjs/header';
 // @ts-ignore
@@ -17,7 +15,6 @@ import RecipeElement from "./RecipeElement.tsx";
 import {useNotificationContext} from "../../contexts/NotificationContext.tsx";
 import {Variant} from "../../models/Variant.ts";
 
-// TODO validate input
 export default function RecipeForm(){
     const navigate = useNavigate();
     const location = useLocation();
@@ -29,8 +26,9 @@ export default function RecipeForm(){
     const [id, setId] = useState<string>("");
     const [category, setCategory] = useState<string>("");
     const [content, setContent] = useState<OutputData>();
-
+    const [image_id, set_image_id] = useState("");
     const [categories, setCategories] = useState([]);
+
     const editorRef = useRef<EditorJS>();
 
     const initEditor = () => {
@@ -103,14 +101,11 @@ export default function RecipeForm(){
             setTitle(recipe.title);
             setCategory(recipe.category);
             setId(recipe._id);
+            set_image_id(recipe.image_id);
 
             if(location.state && location.state.update) {
                 console.log(recipe.content);
                 setContent(recipe.content);
-
-                editorRef?.current?.render({blocks: recipe.content.blocks});
-
-
             }
         }
     }, []);
@@ -130,7 +125,7 @@ export default function RecipeForm(){
             return;
         }
 
-        if(file === null){
+        if(!editing && file === null){
             console.error("Empty image");
             pushNotification("Empty image", Variant.danger);
             return;
@@ -163,7 +158,7 @@ export default function RecipeForm(){
 
         if(editing){
             axios.put(environment.apiUrl + "recipe/" + id,
-                recipeData,
+                formData,
                 {headers: { Authorization: `Bearer ${token}`}})
                 .then(res => {
                     console.log(res);
@@ -204,7 +199,7 @@ export default function RecipeForm(){
                                               placeholder="Enter recipe title"></Form.Control>
                             </FormGroup>
                             <FormGroup>
-                                <Form.Select aria-label="Default select example" name="category" value={category} onChange={e => setCategory(e.target.value)}>
+                                <Form.Select aria-label="Default select example" value={category._id} name="category" onChange={e => setCategory(e.target.value)}>
                                     <option>Select category</option>
                                     {categories.map((category, index) => (
                                         <option key={index} value={category._id}>{category.name}</option>
@@ -212,15 +207,16 @@ export default function RecipeForm(){
                                 </Form.Select>
                             </FormGroup>
                             <FormGroup>
-                                <input id="file" name="file" type="file" onChange={handleFile}/>
+                                <input id="file" className="form-control mt-3" name="file" type="file" onChange={handleFile}/>
                             </FormGroup>
-
+                            {   editing &&
+                                <Image src={environment.apiUrl + "image/" + image_id} className="img-fluid"/>
+                            }
                             <FormGroup>
                                 <Form.Label>Content</Form.Label>
                                 <div id="editorjs" className="editor"></div>
                             </FormGroup>
-
-                            <Button onClick={onSubmit}>Add Recipe</Button>
+                            <Button onClick={onSubmit}>{editing ? 'Edit' : 'Add'} Recipe</Button>
                         </Form>
                     {/*<Editor onSave={saveTextEditorState} readOnly={false} initData={recipeToEdit.content}/>*/}
                 </Card.Body>

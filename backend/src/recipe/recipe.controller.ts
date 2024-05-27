@@ -85,14 +85,17 @@ export class RecipeController {
   @UseGuards(RolesGuard)
   @Roles('admin')
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(FileInterceptor('image', {storage: storage}))
   @ApiOperation({ summary: 'Update recipe (admin)' })
   @ApiBearerAuth('access-token')
   @ApiOkResponse({})
   async updateRecipe(
     @Param('id') id: string,
-    @Body() createRecipeDto: CreateRecipeDto,
+    @UploadedFile() image: Express.Multer.File,
+    @Body() body,
   ) {
-    return this.recipeService.updateRecipe(id, createRecipeDto);
+    const createRecipeDto = JSON.parse(body.recipe);
+    return this.recipeService.updateRecipe(id, createRecipeDto, image);
   }
 
   // every admin can delete other admin recipe
