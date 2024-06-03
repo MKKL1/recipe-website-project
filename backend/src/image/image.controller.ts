@@ -11,7 +11,8 @@ export class ImageController {
   @Get(':id')
   @ApiOperation({ summary: 'Get image' })
   async getImage(@Param('id') id, @Res() res) {
-    (await this.imageService.getFile(id)).pipe(res);
+    const stream = await this.imageService.getFile(id);
+    stream.pipe(res);
   }
 
   //pain

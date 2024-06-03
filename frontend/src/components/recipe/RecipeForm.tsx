@@ -31,10 +31,12 @@ export default function RecipeForm(){
 
     const editorRef = useRef<EditorJS>();
 
-    const initEditor = () => {
+    const initEditor = (contenti) => {
         const editor = new EditorJS({
             holder: 'editorjs',
             onReady: () => {
+                console.log("content w init", contenti);
+                editor.render(contenti);
                 editorRef.current = editor;
             },
             onChange(api: API, event: any) {
@@ -74,25 +76,9 @@ export default function RecipeForm(){
     }, []);
 
     useEffect(() => {
-        if (editorRef.current === null) {
-            initEditor();
-        }
 
-        // why here??
-        if(location.state && location.state.update) {
-            editorRef?.current?.render({blocks: location.state.recipe.blocks});
-        }
-
-        return () => {
-            editorRef?.current?.destroy();
-            // @ts-ignore
-            editorRef.current = null;
-        };
-    }, []);
-
-    // init data if editing
-    useEffect(() => {
         const state = location.state;
+        let contenti = undefined;
 
         if(state && state.update){
             const recipe = state.recipe;
@@ -105,9 +91,31 @@ export default function RecipeForm(){
 
             if(location.state && location.state.update) {
                 console.log(recipe.content);
-                setContent(recipe.content);
+                contenti = recipe.content;
+                setContent(content);
             }
         }
+
+        if (editorRef.current === null) {
+            initEditor(contenti);
+        }   
+
+        // why here??
+        if(location.state && location.state.update) {
+            console.log("content", contenti);
+            editorRef?.current?.render(contenti);
+        }
+
+        return () => {
+            editorRef?.current?.destroy();
+            // @ts-ignore
+            editorRef.current = null;
+        };
+    }, []);
+
+    // init data if editing
+    useEffect(() => {
+        
     }, []);
 
     function handleFile(event: any){
